@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#141319"/><stop offset=".7" stop-color="#07070b"/><stop offset="1" stop-color="#020203"/></linearGradient>
+    <linearGradient id="pad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3a3a48"/><stop offset="1" stop-color="#16161e"/></linearGradient>
+    <linearGradient id="on" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffb703"/><stop offset="1" stop-color="#fb5607"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect x="42" y="36" width="1116" height="82" rx="12" fill="#111118" stroke="#f4a261" stroke-width="2"/>
+  <text x="70" y="88" fill="#ffd166" font-size="34" font-weight="900" font-family="Segoe UI, Arial">MIDI DJ BOX</text>
+  <rect x="330" y="58" width="560" height="38" rx="8" fill="#06150d" stroke="#2ce6a7"/>
+  <text x="352" y="83" fill="#62ffb4" font-size="16" font-family="Consolas, monospace">Ready — build a 16-step groove and press PLAY.</text>
+  <rect x="930" y="58" width="160" height="38" rx="8" fill="#050505" stroke="#ffb703"/>
+  <text x="970" y="83" fill="#ffd166" font-size="17" font-weight="800" font-family="Consolas, monospace">120 BPM</text>
+  <rect x="42" y="145" width="1116" height="470" rx="22" fill="#101017" stroke="#3f3d4a" stroke-width="2"/>
+  <g transform="translate(84 185)">
+    <text x="0" y="35" fill="#d7d7e2" font-size="13" font-weight="700">Bass Drum</text>
+    <text x="0" y="77" fill="#d7d7e2" font-size="13" font-weight="700">Closed Hi-Hat</text>
+    <text x="0" y="119" fill="#d7d7e2" font-size="13" font-weight="700">Open Hi-Hat</text>
+    <text x="0" y="161" fill="#d7d7e2" font-size="13" font-weight="700">Acoustic Snare</text>
+    <text x="0" y="203" fill="#d7d7e2" font-size="13" font-weight="700">Crash Cymbal</text>
+    <text x="0" y="245" fill="#d7d7e2" font-size="13" font-weight="700">Hand Clap</text>
+    <g transform="translate(160 0)">
+      <rect x="0" y="0" width="28" height="7" rx="4" fill="#2ce6a7" filter="url(#glow)"/>
+      <rect x="42" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="84" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="126" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="168" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="210" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="252" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="294" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="336" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="378" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="420" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="462" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="504" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="546" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="588" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/><rect x="630" y="0" width="28" height="7" rx="4" fill="#20202a" stroke="#5f5f72"/>
+      <g transform="translate(0 26)">
+        <rect x="0" y="0" width="30" height="30" rx="7" fill="url(#on)" filter="url(#glow)"/><rect x="42" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="84" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="126" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="168" y="0" width="30" height="30" rx="7" fill="url(#on)" filter="url(#glow)"/><rect x="210" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="252" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="294" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="336" y="0" width="30" height="30" rx="7" fill="url(#on)" filter="url(#glow)"/><rect x="378" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="420" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="462" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="504" y="0" width="30" height="30" rx="7" fill="url(#on)" filter="url(#glow)"/><rect x="546" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="588" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="630" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/>
+      </g>
+      <g transform="translate(0 68)">
+        <rect x="0" y="0" width="30" height="30" rx="7" fill="url(#on)"/><rect x="42" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="84" y="0" width="30" height="30" rx="7" fill="url(#on)"/><rect x="126" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="168" y="0" width="30" height="30" rx="7" fill="url(#on)"/><rect x="210" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/><rect x="252" y="0" width="30" height="30" rx="7" fill="url(#on)"/><rect x="294" y="0" width="30" height="30" rx="7" fill="url(#pad)" stroke="#5f5f72"/>
+      </g>
+    </g>
+  </g>
+  <rect x="42" y="640" width="1116" height="76" rx="12" fill="#07070b" stroke="#292933"/>
+  <rect x="74" y="660" width="88" height="36" rx="10" fill="#49485a"/><text x="100" y="684" fill="#f5f5ff" font-size="14" font-weight="900">PLAY</text>
+  <rect x="178" y="660" width="88" height="36" rx="10" fill="#49485a"/><text x="202" y="684" fill="#f5f5ff" font-size="14" font-weight="900">STOP</text>
+  <rect x="282" y="660" width="100" height="36" rx="10" fill="#ffb703"/><text x="308" y="684" fill="#07070b" font-size="14" font-weight="900">DEMO</text>
+  <text x="430" y="684" fill="#ffb703" font-size="14" font-weight="900">TEMPO</text>
+  <rect x="500" y="675" width="520" height="8" rx="4" fill="#0c0c12" stroke="#3f3d4a"/><circle cx="720" cy="679" r="13" fill="#2ce6a7" filter="url(#glow)"/>
+</svg>
