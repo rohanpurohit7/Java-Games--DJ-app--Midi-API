@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">AI groove builder flow</title>
+  <desc id="desc">Annotated screenshot-style workflow for selecting a culture, selecting a scale or groove, pressing AI Groove, editing pads, and playing the sequence.</desc>
+  <rect width="1280" height="720" fill="#07070b"/>
+  <text x="64" y="72" fill="#ffd166" font-family="Segoe UI, Arial" font-size="38" font-weight="800">Groove Mapping Flow</text>
+  <text x="64" y="112" fill="#d7d7e2" font-family="Segoe UI, Arial" font-size="18">Use the app as a discovery loop: choose a tradition, generate a phrase, edit the pulse, then play and save.</text>
+  <g font-family="Segoe UI, Arial">
+    <rect x="72" y="168" width="230" height="120" rx="8" fill="#101017" stroke="#3f3d4a"/>
+    <text x="96" y="208" fill="#ffb703" font-size="18" font-weight="800">1. Orchestra</text>
+    <text x="96" y="240" fill="#f5f5ff" font-size="16">Indian, Arabic,</text>
+    <text x="96" y="264" fill="#f5f5ff" font-size="16">Japanese, African...</text>
+    <path d="M314 228 H414" stroke="#2ce6a7" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="426" y="168" width="230" height="120" rx="8" fill="#101017" stroke="#3f3d4a"/>
+    <text x="450" y="208" fill="#ffb703" font-size="18" font-weight="800">2. Scale / Groove</text>
+    <text x="450" y="240" fill="#f5f5ff" font-size="16">Raag, maqam, mode,</text>
+    <text x="450" y="264" fill="#f5f5ff" font-size="16">folk or bell cycle</text>
+    <path d="M668 228 H768" stroke="#2ce6a7" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="780" y="168" width="230" height="120" rx="8" fill="#101017" stroke="#3f3d4a"/>
+    <text x="804" y="208" fill="#ffb703" font-size="18" font-weight="800">3. AI Groove</text>
+    <text x="804" y="240" fill="#f5f5ff" font-size="16">Autofill pulse,</text>
+    <text x="804" y="264" fill="#f5f5ff" font-size="16">response, melody</text>
+    <path d="M895 300 V382" stroke="#2ce6a7" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="780" y="394" width="230" height="120" rx="8" fill="#101017" stroke="#3f3d4a"/>
+    <text x="804" y="434" fill="#ffb703" font-size="18" font-weight="800">4. Edit Pads</text>
+    <text x="804" y="466" fill="#f5f5ff" font-size="16">Remove clutter, add</text>
+    <text x="804" y="490" fill="#f5f5ff" font-size="16">offbeats and fills</text>
+    <path d="M768 454 H668" stroke="#2ce6a7" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="426" y="394" width="230" height="120" rx="8" fill="#101017" stroke="#3f3d4a"/>
+    <text x="450" y="434" fill="#ffb703" font-size="18" font-weight="800">5. Play + Tempo</text>
+    <text x="450" y="466" fill="#f5f5ff" font-size="16">Loop the groove and</text>
+    <text x="450" y="490" fill="#f5f5ff" font-size="16">find the pocket</text>
+    <path d="M414 454 H314" stroke="#2ce6a7" stroke-width="4" marker-end="url(#arrow)"/>
+    <rect x="72" y="394" width="230" height="120" rx="8" fill="#101017" stroke="#3f3d4a"/>
+    <text x="96" y="434" fill="#ffb703" font-size="18" font-weight="800">6. Save Versions</text>
+    <text x="96" y="466" fill="#f5f5ff" font-size="16">Keep intro, full,</text>
+    <text x="96" y="490" fill="#f5f5ff" font-size="16">and breakdown maps</text>
+  </g>
+  <rect x="72" y="580" width="1136" height="80" rx="8" fill="#06150d" stroke="#2ce6a7"/>
+  <text x="96" y="628" fill="#62ffb4" font-family="Consolas, monospace" font-size="20">Tip: The same 16-step map can be reinterpreted by changing orchestra panels.</text>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L6,3 z" fill="#2ce6a7"/>
+    </marker>
+  </defs>
+</svg>

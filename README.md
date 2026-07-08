@@ -46,6 +46,10 @@ On Windows, if `java` is not on PATH but a JDK is installed under `%USERPROFILE%
 run-midi-djbox.bat
 ```
 
+## Musician and DJ Playbook
+
+Open `docs/MUSICIAN_DJ_PLAYBOOK.md` for a practical runbook on groove mapping, cultural orchestra presets, AI groove generation, demo patterns, and rhythm discovery workflows.
+
 You can also run the main class directly after Gradle import:
 
 ```text

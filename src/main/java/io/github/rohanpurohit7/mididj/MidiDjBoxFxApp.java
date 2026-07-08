@@ -11,13 +11,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -215,8 +215,8 @@ public class MidiDjBoxFxApp extends Application {
 
         stage.setTitle("MIDI DJ Box - Winamp Skin JavaFX Edition");
         stage.setScene(scene);
-        stage.setMinWidth(1120);
-        stage.setMinHeight(760);
+        stage.setMinWidth(760);
+        stage.setMinHeight(560);
         stage.show();
     }
 
@@ -259,7 +259,7 @@ public class MidiDjBoxFxApp extends Application {
         orchestra.getStyleClass().add("transport-label");
         Label scale = new Label("SCALE / GROOVE");
         scale.getStyleClass().add("transport-label");
-        HBox selectorRow = new HBox(12, orchestra, cultureCombo, scale, grooveCombo);
+        FlowPane selectorRow = new FlowPane(12, 8, orchestra, cultureCombo, scale, grooveCombo);
         selectorRow.setAlignment(Pos.CENTER_LEFT);
 
         VBox header = new VBox(12, row, selectorRow);
@@ -268,7 +268,7 @@ public class MidiDjBoxFxApp extends Application {
         return header;
     }
 
-    private BorderPane buildSequencerPanel() {
+    private ScrollPane buildSequencerPanel() {
         GridPane grid = new GridPane();
         grid.setHgap(7);
         grid.setVgap(7);
@@ -298,7 +298,13 @@ public class MidiDjBoxFxApp extends Application {
         BorderPane panel = new BorderPane(grid);
         panel.setPadding(new Insets(22));
         panel.getStyleClass().add("main-panel");
-        return panel;
+
+        ScrollPane scrollPane = new ScrollPane(panel);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setPannable(true);
+        scrollPane.getStyleClass().add("sequencer-scroll");
+        return scrollPane;
     }
 
     private VBox buildTransport() {

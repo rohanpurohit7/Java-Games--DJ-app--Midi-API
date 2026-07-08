@@ -62,6 +62,18 @@
     -fx-background-color: linear-gradient(to bottom right, #20202a, #101017);
     -fx-border-color: #3f3d4a;
     -fx-border-width: 2;
+    -fx-min-width: 820px;
+    -fx-min-height: 590px;
+}
+
+.sequencer-scroll {
+    -fx-background: #07070b;
+    -fx-background-color: #07070b;
+    -fx-padding: 0;
+}
+
+.sequencer-scroll > .viewport {
+    -fx-background-color: #07070b;
 }
 
 .sequencer-grid {
@@ -78,6 +90,10 @@
     -fx-font-weight: 700;
     -fx-min-width: 154px;
     -fx-pref-width: 154px;
+}
+
+.sequencer-grid {
+    -fx-min-width: 740px;
 }
 
 .beat-pad .box {
