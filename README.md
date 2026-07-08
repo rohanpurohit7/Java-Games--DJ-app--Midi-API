@@ -35,13 +35,7 @@ README.md
 4. Run the Gradle task:
 
 ```bash
-./gradlew run
-```
-
-On Windows:
-
-```powershell
-gradlew.bat run
+gradle run
 ```
 
 You can also run the main class directly after Gradle import:
@@ -49,6 +43,8 @@ You can also run the main class directly after Gradle import:
 ```text
 io.github.rohanpurohit7.mididj.MidiDjBoxFxApp
 ```
+
+Optional: if you want a checked-in Gradle wrapper later, run `gradle wrapper` locally and commit the generated wrapper files.
 
 ## UX Concept
 
