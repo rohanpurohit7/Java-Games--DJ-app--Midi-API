@@ -1,0 +1,132 @@
+.player-shell {
+    -fx-background-color: linear-gradient(to bottom, #141319, #07070b 70%, #020203);
+    -fx-font-family: "Segoe UI", "Inter", "Arial";
+}
+
+.chrome-header {
+    -fx-background-color: linear-gradient(to bottom, #2d2b35, #111118);
+    -fx-border-color: #f4a261 #5c5a66 #050508 #5c5a66;
+    -fx-border-width: 2 2 2 2;
+}
+
+.winamp-title {
+    -fx-text-fill: linear-gradient(to right, #ffd166, #f77f00);
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 2px;
+}
+
+.lcd-text {
+    -fx-background-color: #06150d;
+    -fx-background-radius: 8;
+    -fx-border-color: #2ce6a7;
+    -fx-border-radius: 8;
+    -fx-padding: 10 14 10 14;
+    -fx-text-fill: #62ffb4;
+    -fx-font-family: "Cascadia Mono", "Consolas", monospace;
+    -fx-font-size: 13px;
+}
+
+.tempo-readout {
+    -fx-background-color: #050505;
+    -fx-background-radius: 8;
+    -fx-border-color: #ffb703;
+    -fx-border-radius: 8;
+    -fx-padding: 10 14 10 14;
+    -fx-text-fill: #ffd166;
+    -fx-font-family: "Cascadia Mono", "Consolas", monospace;
+    -fx-font-weight: 800;
+}
+
+.main-panel {
+    -fx-background-color: linear-gradient(to bottom right, #20202a, #101017);
+    -fx-border-color: #3f3d4a;
+    -fx-border-width: 2;
+}
+
+.sequencer-grid {
+    -fx-padding: 18;
+    -fx-background-color: #0c0c12;
+    -fx-background-radius: 18;
+    -fx-border-color: #2b2b38;
+    -fx-border-radius: 18;
+}
+
+.instrument-label {
+    -fx-text-fill: #d7d7e2;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-min-width: 128px;
+}
+
+.beat-pad .box {
+    -fx-background-color: linear-gradient(to bottom, #3a3a48, #16161e);
+    -fx-background-radius: 7;
+    -fx-border-color: #5f5f72;
+    -fx-border-radius: 7;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+}
+
+.beat-pad:selected .box {
+    -fx-background-color: linear-gradient(to bottom, #ffb703, #fb5607);
+    -fx-border-color: #ffd166;
+    -fx-effect: dropshadow(gaussian, rgba(255, 183, 3, .65), 14, .4, 0, 0);
+}
+
+.beat-pad .mark {
+    -fx-background-color: transparent;
+}
+
+.step-light {
+    -fx-fill: #20202a;
+    -fx-stroke: #5f5f72;
+    -fx-arc-width: 6;
+    -fx-arc-height: 6;
+}
+
+.step-active {
+    -fx-fill: #2ce6a7;
+    -fx-effect: dropshadow(gaussian, rgba(44, 230, 167, .85), 18, .6, 0, 0);
+}
+
+.transport {
+    -fx-background-color: linear-gradient(to bottom, #111118, #07070b);
+    -fx-border-color: #292933;
+    -fx-border-width: 2 0 0 0;
+}
+
+.transport-button {
+    -fx-background-color: linear-gradient(to bottom, #49485a, #181820);
+    -fx-background-radius: 10;
+    -fx-border-color: #77758a #111118 #050506 #77758a;
+    -fx-border-radius: 10;
+    -fx-text-fill: #f5f5ff;
+    -fx-font-weight: 900;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+}
+
+.transport-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffb703, #fb5607);
+    -fx-text-fill: #07070b;
+}
+
+.transport-label {
+    -fx-text-fill: #ffb703;
+    -fx-font-weight: 900;
+}
+
+.tempo-slider .track {
+    -fx-background-color: #0c0c12;
+    -fx-border-color: #3f3d4a;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.tempo-slider .thumb {
+    -fx-background-color: linear-gradient(to bottom, #2ce6a7, #00a8e8);
+    -fx-effect: dropshadow(gaussian, rgba(44, 230, 167, .55), 12, .4, 0, 0);
+}
