@@ -1,4 +1,4 @@
-# MIDI DJ Box — Winamp Skin JavaFX Edition
+# MIDI DJ Box - Winamp Skin JavaFX Edition
 
 A modernized JavaFX version of the original Swing MIDI sequencer. The original `musicbox.java` file remains preserved, while the new application adds a Winamp-inspired player skin, 16-step beat grid, transport controls, tempo slider, demo groove, save/load pattern support, and IntelliJ/Cursor-friendly Gradle configuration.
 
@@ -7,6 +7,8 @@ A modernized JavaFX version of the original Swing MIDI sequencer. The original `
 - JavaFX desktop GUI
 - Winamp-style dark player skin
 - 16 instruments x 16 beat steps
+- Ethnic orchestra selector for Indian, Japanese, Chinese, Hungarian, Spanish, English, Mexican, Arabic, and African-inspired panels
+- AI Groove Builder that fills the grid from selected raag, mode, maqam, folk scale, or drum-cycle presets
 - Java Sound MIDI API playback
 - Play, stop, clear, save, load, and demo groove controls
 - Tempo slider with live BPM readout
@@ -16,15 +18,15 @@ A modernized JavaFX version of the original Swing MIDI sequencer. The original `
 
 ```text
 README.md
-├── build.gradle                         JavaFX Gradle build
-├── settings.gradle                      Gradle project settings
-├── docs/
-│   └── winamp-skin-concept.svg          Visual skin concept
-├── src/main/java/io/github/rohanpurohit7/mididj/
-│   └── MidiDjBoxFxApp.java              JavaFX MIDI sequencer entry point
-├── src/main/resources/styles/
-│   └── midi-djbox.css                   Winamp-inspired skin
-└── musicbox.java                        Original Swing MIDI project
+|-- build.gradle                         JavaFX Gradle build
+|-- settings.gradle                      Gradle project settings
+|-- docs/
+|   `-- winamp-skin-concept.svg          Visual skin concept
+|-- src/main/java/io/github/rohanpurohit7/mididj/
+|   `-- MidiDjBoxFxApp.java              JavaFX MIDI sequencer entry point
+|-- src/main/resources/styles/
+|   `-- midi-djbox.css                   Winamp-inspired skin
+`-- musicbox.java                        Original Swing MIDI project
 ```
 
 ## Run in IntelliJ IDEA or Cursor
@@ -36,6 +38,12 @@ README.md
 
 ```bash
 gradle run
+```
+
+On Windows, if `java` is not on PATH but a JDK is installed under `%USERPROFILE%\.jdks`, run:
+
+```bat
+run-midi-djbox.bat
 ```
 
 You can also run the main class directly after Gradle import:

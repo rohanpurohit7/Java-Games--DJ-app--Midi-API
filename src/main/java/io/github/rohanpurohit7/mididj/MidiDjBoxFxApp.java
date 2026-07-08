@@ -9,9 +9,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -43,24 +45,159 @@ public class MidiDjBoxFxApp extends Application {
     private static final int STEPS = 16;
     private static final Path PATTERN_FILE = Path.of("midi-djbox-pattern.txt");
 
-    private final String[] instrumentNames = {
-            "Bass Drum", "Closed Hi-Hat", "Open Hi-Hat", "Acoustic Snare", "Crash Cymbal", "Hand Clap",
-            "High Tom", "Hi Bongo", "Maracas", "Whistle", "Low Conga", "Cowbell", "Vibraslap",
-            "Low-mid Tom", "High Agogo", "Open Hi Conga"
-    };
+    private record CultureProfile(String name, String[] instrumentNames, int[] midiKeys,
+                                  List<ScaleGroove> grooves, int defaultBpm) {
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
-    private final int[] instruments = {35, 42, 46, 38, 49, 39, 50, 60, 70, 72, 64, 56, 58, 47, 67, 63};
+    private record ScaleGroove(String name, int[] scaleDegrees, int[] accents, int[] response,
+                               int pulseEvery, int melodicProgram) {
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    private final List<CultureProfile> cultureProfiles = createCultureProfiles();
     private final List<CheckBox> pads = new ArrayList<>();
+    private final List<Label> instrumentLabels = new ArrayList<>();
     private final List<Rectangle> stepLights = new ArrayList<>();
+    private CultureProfile currentProfile = cultureProfiles.get(0);
+    private ScaleGroove currentGroove = currentProfile.grooves().get(0);
+    private final String[] instrumentNames = currentProfile.instrumentNames().clone();
+    private final int[] instruments = currentProfile.midiKeys().clone();
 
     private Sequencer sequencer;
     private Sequence sequence;
     private Track track;
     private Timeline playheadTimeline;
+    private ComboBox<CultureProfile> cultureCombo;
+    private ComboBox<ScaleGroove> grooveCombo;
     private Slider tempoSlider;
     private Label statusLabel;
     private Label tempoReadout;
     private int playhead;
+
+    private static List<CultureProfile> createCultureProfiles() {
+        return List.of(
+                profile("Indian Orchestra",
+                        names("Tabla Bayan", "Tabla Dayan", "Dholak", "Mridangam", "Kanjira", "Manjira",
+                                "Tanpura Pulse", "Sitar Phrase", "Sarod Phrase", "Bansuri Phrase", "Shehnai Phrase",
+                                "Santoor Phrase", "Harmonium Phrase", "Ghatam", "Dhol Accent", "Temple Bell"),
+                        keys(41, 37, 38, 45, 39, 42, 56, 60, 64, 67, 70, 72, 75, 47, 43, 81),
+                        List.of(
+                                groove("Raag Yaman", degrees(0, 2, 4, 6, 7, 9, 11), beats(0, 4, 8, 12), beats(2, 6, 10, 14), 2, 104),
+                                groove("Raag Bhairav", degrees(0, 1, 4, 5, 7, 8, 11), beats(0, 6, 8, 14), beats(3, 7, 11, 15), 3, 104),
+                                groove("Raag Kafi", degrees(0, 2, 3, 5, 7, 9, 10), beats(0, 4, 10, 12), beats(2, 5, 8, 14), 2, 21)),
+                        118),
+                profile("Japanese Orchestra",
+                        names("Taiko Low", "Taiko High", "Otsuzumi", "Kotsuzumi", "Hyoshigi", "Kane",
+                                "Koto Phrase", "Shamisen Phrase", "Shakuhachi Phrase", "Fue Phrase", "Biwa Phrase",
+                                "Sho Drone", "Temple Block", "Rim Accent", "Bell Tree", "Kabuki Accent"),
+                        keys(41, 45, 47, 50, 76, 81, 60, 62, 65, 67, 70, 72, 77, 37, 81, 39),
+                        List.of(
+                                groove("In Sen Mode", degrees(0, 1, 5, 7, 10), beats(0, 4, 8, 12), beats(3, 7, 11, 15), 4, 107),
+                                groove("Hirajoshi Mode", degrees(0, 2, 3, 7, 8), beats(0, 5, 8, 13), beats(2, 6, 10, 14), 3, 107),
+                                groove("Yo Mode", degrees(0, 2, 5, 7, 9), beats(0, 4, 9, 12), beats(1, 6, 10, 15), 2, 77)),
+                        112),
+                profile("Chinese Orchestra",
+                        names("Tanggu", "Bangu", "Paigu", "Bo Cymbal", "Luo Gong", "Woodblock",
+                                "Guzheng Phrase", "Erhu Phrase", "Dizi Phrase", "Pipa Phrase", "Yangqin Phrase",
+                                "Sheng Phrase", "Suona Phrase", "Temple Bell", "Opera Clap", "Lion Dance Hit"),
+                        keys(36, 38, 45, 49, 52, 76, 60, 62, 67, 69, 72, 74, 77, 81, 39, 55),
+                        List.of(
+                                groove("Gong Pentatonic", degrees(0, 2, 4, 7, 9), beats(0, 4, 8, 12), beats(2, 6, 10, 14), 2, 108),
+                                groove("Shang Pentatonic", degrees(0, 2, 5, 7, 10), beats(0, 3, 8, 11), beats(4, 6, 12, 14), 3, 108),
+                                groove("Yu Pentatonic", degrees(0, 3, 5, 7, 10), beats(0, 5, 8, 13), beats(2, 7, 10, 15), 2, 72)),
+                        116),
+                profile("Hungarian Orchestra",
+                        names("Tapan Drum", "Side Drum", "Cimbalom Hit", "Tambourine", "Clap", "Triangle",
+                                "Cimbalom Phrase", "Violin Phrase", "Clarinet Phrase", "Dulcimer Phrase", "Brass Stab",
+                                "Bass Pulse", "Snare Roll", "Foot Stomp", "Accent Cymbal", "Dance Bell"),
+                        keys(36, 38, 47, 54, 39, 81, 60, 64, 67, 72, 74, 41, 40, 35, 49, 80),
+                        List.of(
+                                groove("Hungarian Minor", degrees(0, 2, 3, 6, 7, 8, 11), beats(0, 4, 8, 12), beats(2, 5, 10, 13), 2, 15),
+                                groove("Verbunkos Dance", degrees(0, 2, 4, 6, 7, 9, 10), beats(0, 3, 8, 11), beats(4, 7, 12, 15), 3, 41)),
+                        132),
+                profile("Spanish Orchestra",
+                        names("Cajon Bass", "Cajon Slap", "Palmas", "Castanets", "Tambourine", "Heel Tap",
+                                "Guitar Phrase", "Nylon Lead", "Flamenco Picado", "Bandurria Phrase", "Trumpet Stab",
+                                "Bass Pulse", "Cymbal Roll", "Hand Clap", "Accent Hit", "Jaleo Bell"),
+                        keys(36, 38, 39, 75, 54, 37, 60, 64, 67, 69, 72, 41, 49, 39, 45, 81),
+                        List.of(
+                                groove("Phrygian Dominant", degrees(0, 1, 4, 5, 7, 8, 10), beats(0, 3, 6, 8, 11, 14), beats(2, 5, 9, 12), 2, 24),
+                                groove("Flamenco Cadence", degrees(0, 1, 3, 4, 5, 7, 8, 10), beats(0, 4, 7, 10, 12, 15), beats(2, 6, 9, 13), 3, 24)),
+                        124),
+                profile("English Orchestra",
+                        names("Kick Drum", "Snare Drum", "Tabor", "Tambourine", "Handbells", "Triangle",
+                                "Fiddle Phrase", "Piano Phrase", "Recorder Phrase", "Concertina Phrase", "Brass Phrase",
+                                "Cello Pulse", "Side Stick", "Clap", "Crash", "Morris Bell"),
+                        keys(36, 38, 45, 54, 80, 81, 60, 64, 67, 69, 72, 41, 37, 39, 49, 81),
+                        List.of(
+                                groove("Major Folk", degrees(0, 2, 4, 5, 7, 9, 11), beats(0, 4, 8, 12), beats(2, 6, 10, 14), 2, 41),
+                                groove("Dorian Folk", degrees(0, 2, 3, 5, 7, 9, 10), beats(0, 3, 8, 11), beats(4, 6, 12, 14), 3, 41)),
+                        120),
+                profile("Mexican Orchestra",
+                        names("Bombo", "Tarola", "Guitarron Pulse", "Vihuela Chop", "Maracas", "Clap",
+                                "Trumpet Phrase", "Violin Phrase", "Guitar Phrase", "Accordion Phrase", "Jarana Phrase",
+                                "Requinto Phrase", "Guiro", "Cowbell", "Crash", "Grito Accent"),
+                        keys(36, 38, 41, 37, 70, 39, 60, 64, 67, 69, 72, 74, 73, 56, 49, 55),
+                        List.of(
+                                groove("Son Jarocho", degrees(0, 2, 4, 5, 7, 9, 10), beats(0, 3, 6, 8, 11, 14), beats(2, 5, 9, 12), 2, 25),
+                                groove("Ranchera Major", degrees(0, 2, 4, 5, 7, 9, 11), beats(0, 4, 8, 12), beats(3, 7, 11, 15), 2, 57)),
+                        126),
+                profile("Arabic Orchestra",
+                        names("Darbuka Doum", "Darbuka Tek", "Riq", "Bendir", "Frame Drum", "Finger Cymbals",
+                                "Oud Phrase", "Qanun Phrase", "Nay Phrase", "Mizmar Phrase", "Rababa Phrase",
+                                "Accordion Phrase", "Sagat", "Clap", "Daff Accent", "Pearl Inlay Drum"),
+                        keys(36, 38, 54, 45, 47, 80, 60, 64, 67, 70, 72, 74, 81, 39, 43, 41),
+                        List.of(
+                                groove("Maqam Hijaz", degrees(0, 1, 4, 5, 7, 8, 10), beats(0, 4, 8, 12), beats(2, 6, 10, 14), 2, 105),
+                                groove("Maqam Bayati", degrees(0, 1, 3, 5, 7, 8, 10), beats(0, 3, 8, 11), beats(4, 6, 12, 14), 3, 105),
+                                groove("Egyptian Darbuka Saidi", degrees(0, 2, 4, 5, 7, 8, 10), beats(0, 3, 7, 8, 11, 15), beats(2, 5, 10, 13), 2, 105),
+                                groove("Maqsum Baladi", degrees(0, 2, 3, 5, 7, 9, 10), beats(0, 4, 6, 8, 12, 14), beats(2, 5, 10, 13), 2, 105)),
+                        108),
+                profile("African Orchestra",
+                        names("Djembe Bass", "Djembe Tone", "Djembe Slap", "Dunun", "Talking Drum", "Shekere",
+                                "Balafon Phrase", "Kora Phrase", "Mbira Phrase", "Flute Phrase", "Horn Phrase",
+                                "Bass Pulse", "Agogo", "Claves", "Shaker", "Call Bell"),
+                        keys(36, 38, 39, 41, 47, 70, 60, 64, 67, 69, 72, 43, 67, 75, 82, 56),
+                        List.of(
+                                groove("Kuku Pentatonic", degrees(0, 2, 5, 7, 10), beats(0, 3, 6, 8, 11, 14), beats(2, 5, 10, 13), 2, 107),
+                                groove("Adowa Bell Cycle", degrees(0, 3, 5, 7, 10), beats(0, 2, 5, 7, 10, 12, 15), beats(3, 6, 9, 13), 3, 107),
+                                groove("Afrobeat Minor", degrees(0, 2, 3, 5, 7, 10), beats(0, 4, 8, 11, 14), beats(2, 6, 10, 12), 2, 18)),
+                        118)
+        );
+    }
+
+    private static CultureProfile profile(String name, String[] instrumentNames, int[] midiKeys,
+                                          List<ScaleGroove> grooves, int defaultBpm) {
+        return new CultureProfile(name, instrumentNames, midiKeys, grooves, defaultBpm);
+    }
+
+    private static ScaleGroove groove(String name, int[] scaleDegrees, int[] accents, int[] response,
+                                      int pulseEvery, int melodicProgram) {
+        return new ScaleGroove(name, scaleDegrees, accents, response, pulseEvery, melodicProgram);
+    }
+
+    private static String[] names(String... names) {
+        return names;
+    }
+
+    private static int[] keys(int... keys) {
+        return keys;
+    }
+
+    private static int[] degrees(int... degrees) {
+        return degrees;
+    }
+
+    private static int[] beats(int... beats) {
+        return beats;
+    }
 
     @Override
     public void start(Stage stage) {
@@ -73,13 +210,13 @@ public class MidiDjBoxFxApp extends Application {
         shell.setCenter(buildSequencerPanel());
         shell.setBottom(buildTransport());
 
-        Scene scene = new Scene(shell, 1180, 780);
+        Scene scene = new Scene(shell, 1240, 860);
         scene.getStylesheets().add(MidiDjBoxFxApp.class.getResource("/styles/midi-djbox.css").toExternalForm());
 
-        stage.setTitle("MIDI DJ Box — Winamp Skin JavaFX Edition");
+        stage.setTitle("MIDI DJ Box - Winamp Skin JavaFX Edition");
         stage.setScene(scene);
-        stage.setMinWidth(1040);
-        stage.setMinHeight(690);
+        stage.setMinWidth(1120);
+        stage.setMinHeight(760);
         stage.show();
     }
 
@@ -87,7 +224,7 @@ public class MidiDjBoxFxApp extends Application {
         Label title = new Label("MIDI DJ BOX");
         title.getStyleClass().add("winamp-title");
 
-        statusLabel = new Label("Ready — build a 16-step groove and press PLAY.");
+        statusLabel = new Label("Ready - build a 16-step groove and press PLAY.");
         statusLabel.getStyleClass().add("lcd-text");
 
         tempoReadout = new Label("120 BPM");
@@ -97,7 +234,35 @@ public class MidiDjBoxFxApp extends Application {
         row.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(statusLabel, Priority.ALWAYS);
 
-        VBox header = new VBox(row);
+        cultureCombo = new ComboBox<>();
+        cultureCombo.getItems().setAll(cultureProfiles);
+        cultureCombo.setValue(currentProfile);
+        cultureCombo.getStyleClass().add("orchestra-select");
+        cultureCombo.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                applyCulture(newValue);
+            }
+        });
+
+        grooveCombo = new ComboBox<>();
+        grooveCombo.getItems().setAll(currentProfile.grooves());
+        grooveCombo.setValue(currentGroove);
+        grooveCombo.getStyleClass().add("orchestra-select");
+        grooveCombo.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                currentGroove = newValue;
+                statusLabel.setText(currentProfile.name() + " selected: " + currentGroove.name());
+            }
+        });
+
+        Label orchestra = new Label("ORCHESTRA");
+        orchestra.getStyleClass().add("transport-label");
+        Label scale = new Label("SCALE / GROOVE");
+        scale.getStyleClass().add("transport-label");
+        HBox selectorRow = new HBox(12, orchestra, cultureCombo, scale, grooveCombo);
+        selectorRow.setAlignment(Pos.CENTER_LEFT);
+
+        VBox header = new VBox(12, row, selectorRow);
         header.setPadding(new Insets(18, 22, 14, 22));
         header.getStyleClass().add("chrome-header");
         return header;
@@ -119,6 +284,7 @@ public class MidiDjBoxFxApp extends Application {
         for (int row = 0; row < ROWS; row++) {
             Label instrument = new Label(instrumentNames[row]);
             instrument.getStyleClass().add("instrument-label");
+            instrumentLabels.add(instrument);
             grid.add(instrument, 0, row + 1);
 
             for (int step = 0; step < STEPS; step++) {
@@ -135,7 +301,7 @@ public class MidiDjBoxFxApp extends Application {
         return panel;
     }
 
-    private HBox buildTransport() {
+    private VBox buildTransport() {
         Button play = commandButton("PLAY");
         play.setOnAction(event -> playPattern());
 
@@ -154,6 +320,9 @@ public class MidiDjBoxFxApp extends Application {
         Button demo = commandButton("DEMO GROOVE");
         demo.setOnAction(event -> loadDemoGroove());
 
+        Button aiGroove = commandButton("AI GROOVE");
+        aiGroove.setOnAction(event -> buildAiGroove());
+
         tempoSlider = new Slider(70, 190, 120);
         tempoSlider.getStyleClass().add("tempo-slider");
         tempoSlider.valueProperty().addListener((obs, oldValue, newValue) -> {
@@ -167,12 +336,39 @@ public class MidiDjBoxFxApp extends Application {
         Label tempo = new Label("TEMPO");
         tempo.getStyleClass().add("transport-label");
 
-        HBox transport = new HBox(12, play, stop, clear, save, load, demo, tempo, tempoSlider);
-        transport.setAlignment(Pos.CENTER_LEFT);
+        FlowPane controls = new FlowPane(12, 10, play, stop, clear, save, load, demo, aiGroove);
+        controls.setAlignment(Pos.CENTER_LEFT);
+
+        HBox tempoControl = new HBox(12, tempo, tempoSlider);
+        tempoControl.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(tempoSlider, Priority.ALWAYS);
+
+        VBox transport = new VBox(12, controls, tempoControl);
         transport.setPadding(new Insets(16, 22, 22, 22));
         transport.getStyleClass().add("transport");
-        HBox.setHgrow(tempoSlider, Priority.ALWAYS);
         return transport;
+    }
+
+    private void applyCulture(CultureProfile profile) {
+        currentProfile = profile;
+        currentGroove = profile.grooves().get(0);
+
+        for (int index = 0; index < ROWS; index++) {
+            instrumentNames[index] = profile.instrumentNames()[index];
+            instruments[index] = profile.midiKeys()[index];
+            if (index < instrumentLabels.size()) {
+                instrumentLabels.get(index).setText(instrumentNames[index]);
+            }
+        }
+
+        if (grooveCombo != null) {
+            grooveCombo.getItems().setAll(profile.grooves());
+            grooveCombo.setValue(currentGroove);
+        }
+        if (tempoSlider != null) {
+            tempoSlider.setValue(profile.defaultBpm());
+        }
+        statusLabel.setText(profile.name() + " loaded. Pick a scale/groove or press AI GROOVE.");
     }
 
     private Button commandButton(String text) {
@@ -204,7 +400,7 @@ public class MidiDjBoxFxApp extends Application {
             sequencer.setTempoInBPM((int) tempoSlider.getValue());
             sequencer.start();
             startPlayheadAnimation();
-            statusLabel.setText("Playing pattern — Java Sound MIDI sequencer active.");
+            statusLabel.setText("Playing pattern - Java Sound MIDI sequencer active.");
         } catch (Exception ex) {
             statusLabel.setText("Unable to play pattern: " + ex.getMessage());
         }
@@ -224,6 +420,7 @@ public class MidiDjBoxFxApp extends Application {
     private void buildTrack() throws InvalidMidiDataException {
         sequence.deleteTrack(track);
         track = sequence.createTrack();
+        track.add(makeEvent(ShortMessage.PROGRAM_CHANGE, 0, currentGroove.melodicProgram(), 0, 0));
 
         for (int row = 0; row < ROWS; row++) {
             int key = instruments[row];
@@ -231,11 +428,24 @@ public class MidiDjBoxFxApp extends Application {
                 if (isPadSelected(row, step)) {
                     track.add(makeEvent(ShortMessage.NOTE_ON, 9, key, 100, step));
                     track.add(makeEvent(ShortMessage.NOTE_OFF, 9, key, 100, step + 1));
+                    if (row >= 6) {
+                        int note = melodyNoteForRow(row);
+                        track.add(makeEvent(ShortMessage.NOTE_ON, 0, note, 72, step));
+                        track.add(makeEvent(ShortMessage.NOTE_OFF, 0, note, 0, step + 1));
+                    }
                 }
             }
             track.add(makeEvent(ShortMessage.CONTROL_CHANGE, 1, 127, 0, STEPS));
         }
         track.add(makeEvent(ShortMessage.PROGRAM_CHANGE, 9, 1, 0, STEPS - 1));
+    }
+
+    private int melodyNoteForRow(int row) {
+        int[] degrees = currentGroove.scaleDegrees();
+        int melodicRow = row - 6;
+        int degree = degrees[melodicRow % degrees.length];
+        int octave = melodicRow / degrees.length;
+        return 60 + degree + (octave * 12);
     }
 
     private MidiEvent makeEvent(int command, int channel, int data1, int data2, int tick) throws InvalidMidiDataException {
@@ -270,6 +480,101 @@ public class MidiDjBoxFxApp extends Application {
     private void clearPattern() {
         pads.forEach(pad -> pad.setSelected(false));
         statusLabel.setText("Pattern cleared.");
+    }
+
+    private void buildAiGroove() {
+        pads.forEach(pad -> pad.setSelected(false));
+
+        for (int step : currentGroove.accents()) {
+            setStep(0, step);
+            setStep(15, step);
+            setStep(1, step + 1);
+        }
+
+        for (int step : currentGroove.response()) {
+            setStep(2, step);
+            setStep(3, step);
+            setStep(4, step + 1);
+        }
+
+        for (int step = 0; step < STEPS; step += Math.max(1, currentGroove.pulseEvery())) {
+            setStep(5, step);
+            setStep(14, step);
+        }
+
+        int melodyIndex = 0;
+        for (int step = 0; step < STEPS; step++) {
+            boolean activeStep = contains(currentGroove.accents(), step)
+                    || contains(currentGroove.response(), step)
+                    || step % Math.max(1, currentGroove.pulseEvery()) == 0;
+            if (activeStep) {
+                int degree = currentGroove.scaleDegrees()[melodyIndex % currentGroove.scaleDegrees().length];
+                int row = 6 + Math.floorMod(degree + melodyIndex, 10);
+                setStep(row, step);
+                if (degree % 2 == 0) {
+                    setStep(row, step + 1);
+                }
+                melodyIndex++;
+            }
+        }
+
+        addCultureSpecificAccents();
+        statusLabel.setText("AI groove built: " + currentProfile.name() + " / " + currentGroove.name());
+        flashGrid();
+    }
+
+    private void addCultureSpecificAccents() {
+        String culture = currentProfile.name();
+        String groove = currentGroove.name();
+
+        if (culture.contains("Arabic")) {
+            if (groove.contains("Saidi")) {
+                for (int step : new int[]{0, 3, 7, 8, 11, 15}) {
+                    setStep(0, step);
+                }
+                for (int step : new int[]{2, 5, 10, 13}) {
+                    setStep(1, step);
+                    setStep(15, step);
+                }
+            } else if (groove.contains("Maqsum")) {
+                for (int step : new int[]{0, 4, 6, 8, 12, 14}) {
+                    setStep(0, step);
+                }
+                for (int step : new int[]{2, 5, 10, 13}) {
+                    setStep(1, step);
+                    setStep(2, step);
+                }
+            }
+        } else if (culture.contains("Indian")) {
+            for (int step : new int[]{0, 4, 8, 12}) {
+                setStep(0, step);
+                setStep(1, step + 2);
+            }
+        } else if (culture.contains("African")) {
+            for (int step : new int[]{0, 2, 5, 7, 10, 12, 15}) {
+                setStep(13, step);
+            }
+        } else if (culture.contains("Spanish")) {
+            for (int step : new int[]{0, 3, 6, 8, 11, 14}) {
+                setStep(2, step);
+                setStep(3, step + 1);
+            }
+        }
+    }
+
+    private void setStep(int row, int step) {
+        if (row >= 0 && row < ROWS && step >= 0 && step < STEPS) {
+            setPadSelected(row, step, true);
+        }
+    }
+
+    private boolean contains(int[] values, int needle) {
+        for (int value : values) {
+            if (value == needle) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void savePattern() {

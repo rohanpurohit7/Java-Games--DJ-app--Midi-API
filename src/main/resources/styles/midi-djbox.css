@@ -38,6 +38,26 @@
     -fx-font-weight: 800;
 }
 
+.orchestra-select {
+    -fx-background-color: #0c0c12;
+    -fx-background-radius: 8;
+    -fx-border-color: #3f3d4a;
+    -fx-border-radius: 8;
+    -fx-mark-color: #2ce6a7;
+    -fx-pref-width: 230px;
+}
+
+.orchestra-select .list-cell {
+    -fx-background-color: #0c0c12;
+    -fx-text-fill: #f5f5ff;
+    -fx-font-weight: 700;
+}
+
+.orchestra-select .list-view {
+    -fx-background-color: #0c0c12;
+    -fx-border-color: #3f3d4a;
+}
+
 .main-panel {
     -fx-background-color: linear-gradient(to bottom right, #20202a, #101017);
     -fx-border-color: #3f3d4a;
@@ -56,7 +76,8 @@
     -fx-text-fill: #d7d7e2;
     -fx-font-size: 12px;
     -fx-font-weight: 700;
-    -fx-min-width: 128px;
+    -fx-min-width: 154px;
+    -fx-pref-width: 154px;
 }
 
 .beat-pad .box {

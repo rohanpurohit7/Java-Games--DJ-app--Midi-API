@@ -1,4 +1,4 @@
-# Run and Play Guide — MIDI DJ Box
+# Run and Play Guide - MIDI DJ Box
 
 ## 1. Prerequisites
 
@@ -18,11 +18,11 @@ gradle -version
 ## 2. Open the Project in IntelliJ IDEA
 
 1. Open IntelliJ IDEA.
-2. Select **File → Open**.
+2. Select **File > Open**.
 3. Choose the cloned `Java-Games--DJ-app--Midi-API` repository folder.
 4. When prompted, open it as a **Gradle project**.
 5. Wait for Gradle sync to finish.
-6. Confirm the project SDK is JDK 21 or newer under **File → Project Structure → Project SDK**.
+6. Confirm the project SDK is JDK 21 or newer under **File > Project Structure > Project SDK**.
 
 ## 3. Open the Project in Cursor
 
@@ -45,10 +45,16 @@ From the repository root:
 gradle run
 ```
 
+On Windows, this project also includes a launcher that can find JDKs installed under `%USERPROFILE%\.jdks`:
+
+```bat
+run-midi-djbox.bat
+```
+
 The JavaFX window should open with the title:
 
 ```text
-MIDI DJ Box — Winamp Skin JavaFX Edition
+MIDI DJ Box - Winamp Skin JavaFX Edition
 ```
 
 ## 5. Run by Main Class
@@ -68,9 +74,11 @@ io.github.rohanpurohit7.mididj.MidiDjBoxFxApp
 5. Press **STOP** to stop playback.
 6. Move the **TEMPO** slider to change BPM.
 7. Press **DEMO GROOVE** to load a starter rhythm.
-8. Press **SAVE** to save the current pattern to `midi-djbox-pattern.txt`.
-9. Press **LOAD** to reload the saved pattern.
-10. Press **CLEAR** to reset the grid.
+8. Choose an **ORCHESTRA** and **SCALE / GROOVE** to switch the instrument panel.
+9. Press **AI GROOVE** to generate a pattern from the selected cultural scale or drum cycle.
+10. Press **SAVE** to save the current pattern to `midi-djbox-pattern.txt`.
+11. Press **LOAD** to reload the saved pattern.
+12. Press **CLEAR** to reset the grid.
 
 ## 7. Rapid Prototyping Ideas
 
