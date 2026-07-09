@@ -19,6 +19,8 @@ A modernized JavaFX version of the original Swing MIDI sequencer. The original `
 ```text
 README.md
 |-- build.gradle                         JavaFX Gradle build
+|-- run-midi-djbox.bat                   Windows Gradle launcher
+|-- run-midi-djbox-standalone.bat        Windows direct JavaFX launcher
 |-- settings.gradle                      Gradle project settings
 |-- docs/
 |   `-- winamp-skin-concept.svg          Visual skin concept
@@ -34,7 +36,7 @@ README.md
 1. Open the repository folder as a Gradle project.
 2. Let the IDE import Gradle dependencies.
 3. Use JDK 21 or newer.
-4. Run the Gradle task:
+4. Run the Gradle task or the JavaFX main class.
 
 ```bash
 gradle run
@@ -45,6 +47,61 @@ On Windows, if `java` is not on PATH but a JDK is installed under `%USERPROFILE%
 ```bat
 run-midi-djbox.bat
 ```
+
+The Gradle launcher sequence is:
+
+```text
+run-midi-djbox.bat -> Gradle application plugin -> io.github.rohanpurohit7.mididj.MidiDjBoxFxApp
+```
+
+## Run Standalone Without Gradle
+
+You can also compile and run the JavaFX main class directly:
+
+```bat
+run-midi-djbox-standalone.bat
+```
+
+The direct JavaFX launcher sequence is:
+
+```text
+run-midi-djbox-standalone.bat -> javac -> java --module-path JavaFX -> io.github.rohanpurohit7.mididj.MidiDjBoxFxApp
+```
+
+To verify direct compilation without opening the app window:
+
+```bat
+run-midi-djbox-standalone.bat --compile-only
+```
+
+The standalone launcher runs:
+
+```text
+io.github.rohanpurohit7.mididj.MidiDjBoxFxApp
+```
+
+It looks for JavaFX in this order:
+
+- `%JAVAFX_HOME%\lib`
+- `%PATH_TO_FX%`
+- OpenJFX jars already downloaded by Gradle under `%USERPROFILE%\.gradle`
+
+If you use an IDE run configuration instead of the script, use the same main class and add VM options like:
+
+```text
+--module-path C:\path\to\javafx-sdk-21.0.5\lib --add-modules javafx.controls,javafx.graphics
+```
+
+Also keep `src\main\resources` on the runtime classpath so `/styles/midi-djbox.css` can load.
+
+## Play Directions
+
+1. Launch the app with `run-midi-djbox.bat` or `run-midi-djbox-standalone.bat`.
+2. Choose an orchestra and groove preset from the top controls.
+3. Click pads in the 16-step grid to build a rhythm.
+4. Press `PLAY` to start MIDI playback.
+5. Adjust tempo with the BPM slider while the groove is playing.
+6. Use `DEMO`, `CLEAR`, `SAVE`, and `LOAD` to explore or persist patterns.
 
 ## Musician and DJ Playbook
 

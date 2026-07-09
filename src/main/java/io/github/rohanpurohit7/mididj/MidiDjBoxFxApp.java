@@ -31,6 +31,7 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -211,7 +212,11 @@ public class MidiDjBoxFxApp extends Application {
         shell.setBottom(buildTransport());
 
         Scene scene = new Scene(shell, 1240, 860);
-        scene.getStylesheets().add(MidiDjBoxFxApp.class.getResource("/styles/midi-djbox.css").toExternalForm());
+        URL stylesheet = MidiDjBoxFxApp.class.getResource("/styles/midi-djbox.css");
+        if (stylesheet == null) {
+            throw new IllegalStateException("Missing /styles/midi-djbox.css. Add src/main/resources to the classpath.");
+        }
+        scene.getStylesheets().add(stylesheet.toExternalForm());
 
         stage.setTitle("MIDI DJ Box - Winamp Skin JavaFX Edition");
         stage.setScene(scene);

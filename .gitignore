@@ -6,3 +6,4 @@ out/
 *.class
 .DS_Store
 midi-djbox-pattern.txt
+run.log
