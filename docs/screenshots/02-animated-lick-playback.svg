@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#0f141c"/>
+  <rect x="30" y="25" width="1220" height="670" rx="18" fill="#1a2230" stroke="#63b3ed" stroke-width="2"/>
+  <text x="60" y="70" fill="#fff" font-family="Arial" font-size="30" font-weight="bold">ANIMATED LICK PRACTICE</text>
+  <text x="60" y="105" fill="#90cdf4" font-family="Arial" font-size="17">Backing: Blues Rock • Key: A • Scale: Blues • 110 BPM</text>
+  <rect x="60" y="135" width="1160" height="85" rx="12" fill="#252f40"/>
+  <rect x="85" y="150" width="220" height="50" rx="8" fill="#805ad5"/>
+  <text x="112" y="181" fill="#fff" font-family="Arial" font-size="17" font-weight="bold">GENERATE NEW LICK</text>
+  <rect x="325" y="150" width="220" height="50" rx="8" fill="#2b6cb0"/>
+  <text x="350" y="181" fill="#fff" font-family="Arial" font-size="17" font-weight="bold">PLAY ANIMATED LICK</text>
+  <rect x="565" y="150" width="220" height="50" rx="8" fill="#4a5568"/>
+  <text x="600" y="181" fill="#fff" font-family="Arial" font-size="17" font-weight="bold">STOP LICK</text>
+  <text x="825" y="181" fill="#f6ad55" font-family="Arial" font-size="20" font-weight="bold">NOW: String 2 • Fret 8 • C</text>
+  <rect x="60" y="245" width="1160" height="330" rx="12" fill="#111827" stroke="#3b4557"/>
+  <text x="85" y="280" fill="#f7fafc" font-family="Arial" font-size="18">Follow the glowing note while the orchestra continues underneath.</text>
+  <g stroke="#718096" stroke-width="2">
+    <line x1="110" y1="330" x2="1160" y2="330"/><line x1="110" y1="375" x2="1160" y2="375"/>
+    <line x1="110" y1="420" x2="1160" y2="420"/><line x1="110" y1="465" x2="1160" y2="465"/>
+    <line x1="110" y1="510" x2="1160" y2="510"/><line x1="110" y1="555" x2="1160" y2="555"/>
+  </g>
+  <g stroke="#4a5568">
+    <line x1="190" y1="305" x2="190" y2="570"/><line x1="270" y1="305" x2="270" y2="570"/>
+    <line x1="350" y1="305" x2="350" y2="570"/><line x1="430" y1="305" x2="430" y2="570"/>
+    <line x1="510" y1="305" x2="510" y2="570"/><line x1="590" y1="305" x2="590" y2="570"/>
+    <line x1="670" y1="305" x2="670" y2="570"/><line x1="750" y1="305" x2="750" y2="570"/>
+    <line x1="830" y1="305" x2="830" y2="570"/><line x1="910" y1="305" x2="910" y2="570"/>
+    <line x1="990" y1="305" x2="990" y2="570"/><line x1="1070" y1="305" x2="1070" y2="570"/>
+  </g>
+  <g font-family="Arial" font-size="14" text-anchor="middle">
+    <circle cx="230" cy="420" r="14" fill="#48bb78"/><text x="230" y="425" fill="#fff">A</text>
+    <circle cx="350" cy="420" r="14" fill="#48bb78"/><text x="350" y="425" fill="#fff">C</text>
+    <circle cx="510" cy="375" r="14" fill="#48bb78"/><text x="510" y="380" fill="#fff">D</text>
+    <circle cx="670" cy="375" r="14" fill="#ecc94b"/><text x="670" y="380" fill="#111">Eb</text>
+    <circle cx="750" cy="375" r="28" fill="#f56565" opacity=".25"/>
+    <circle cx="750" cy="375" r="17" fill="#f56565"/><text x="750" y="380" fill="#fff">C</text>
+    <circle cx="910" cy="330" r="14" fill="#48bb78"/><text x="910" y="335" fill="#fff">E</text>
+  </g>
+  <rect x="60" y="605" width="1160" height="60" rx="8" fill="#0f172a"/>
+  <text x="85" y="640" fill="#9ae6b4" font-family="Arial" font-size="17">STEP 2: Press PLAY ANIMATED LICK and copy each highlighted string/fret in time.</text>
+</svg>
