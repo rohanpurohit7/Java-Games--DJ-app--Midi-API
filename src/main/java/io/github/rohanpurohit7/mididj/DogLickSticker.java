@@ -52,7 +52,7 @@ public final class DogLickSticker extends StackPane {
         photo.setImage(new Image(s.url(),true));caption.setText(text);attribution.setText(s.credit()+" · "+s.license());
         if(hold!=null)hold.stop();setVisible(true);setManaged(true);setOpacity(0);setScaleX(.72);setScaleY(.72);
         FadeTransition fade=new FadeTransition(Duration.millis(180),this);fade.setToValue(1);
-        ScaleTransition pop=new ScaleTransition(Duration.millis(250),this);pop.setToX(1);pop.setToY(1);pop.setByAngle(0);fade.play();pop.play();
+        ScaleTransition pop=new ScaleTransition(Duration.millis(250),this);pop.setToX(1);pop.setToY(1);fade.play();pop.play();
         hold=new PauseTransition(Duration.seconds(3.2));hold.setOnFinished(e->hideSticker());hold.play();
     }
 
