@@ -33,6 +33,10 @@
     -fx-text-fill: white;
 }
 
+.scroll-pane, .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
 .fretboard {
     -fx-padding: 12;
     -fx-background-color: #25170f;
@@ -103,4 +107,35 @@
 
 .studio-button:hover {
     -fx-background-color: linear-gradient(to bottom, #4b6988, #2b4158);
+}
+
+.transport {
+    -fx-background-color: rgba(10, 15, 23, .97);
+    -fx-border-color: #26384d;
+    -fx-border-width: 1 0 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.55), 12, .25, 0, -2);
+}
+
+.guitar-photo-card {
+    -fx-background-color: linear-gradient(to bottom right, #151d28, #0c1017);
+    -fx-border-color: #394e67;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.55), 18, .25, 0, 5);
+}
+
+.guitar-photo-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd166;
+}
+
+.guitar-photo-attribution {
+    -fx-font-size: 10px;
+    -fx-text-fill: #9fb0c5;
+}
+
+@media (max-width: 900px) {
+    .studio-title { -fx-font-size: 18px; }
+    .studio-button { -fx-padding: 7 9 7 9; }
 }
