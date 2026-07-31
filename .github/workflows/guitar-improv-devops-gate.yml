@@ -13,7 +13,7 @@ permissions:
 jobs:
   web-build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,19 +24,30 @@ jobs:
         run: npm install
       - name: Build React application
         run: npm run build
-      - name: Verify core guitar experience
+      - name: Verify in-memory backing and guitar libraries
         shell: bash
         run: |
           set -euo pipefail
           test -f src/App.jsx
           test -f src/audio/guitarEngine.js
           test -f src/music/lickGenerator.js
+          test -f src/music/backingCatalog.js
           grep -q 'PLAY LICK OVER BAND' src/App.jsx
           grep -q 'PLAY CONTINUOUS IMPROV' src/App.jsx
+          grep -q 'preloadBackingTracks' src/audio/guitarEngine.js
           grep -q 'hammer-on' src/music/lickGenerator.js
           grep -q 'pitchWheel' src/audio/guitarEngine.js
-          grep -q 'freepats-clean-electric-guitar.sf2' src/audio/guitarEngine.js
-          test -f public/soundfonts/freepats-clean-electric-guitar.sf2
+          test -f public/soundfonts/freepats-electric-clean.sf2
+          test -f public/soundfonts/freepats-electric-jazz.sf2
+          test -f public/soundfonts/freepats-nylon-spanish.sf2
+          test -f public/backing-tracks/funk-soul.ogg
+          test -f public/backing-tracks/e-blues.ogg
+          test -f public/backing-tracks/blues-accompaniment.ogg
+          test -f public/backing-tracks/jazz-at-the-park.ogg
+          test -f public/backing-tracks/jazz-guitar.ogg
+          test -f public/backing-tracks/static.ogg
+          test -f public/backing-tracks/jazz-piano.ogg
+          test -f public/backing-tracks/shumi-piano.ogg
           test -f public/assets/studio-electric-guitar.jpg
           test -f dist/index.html
       - name: Upload web demo
