@@ -14,8 +14,8 @@ class GuitarTheoryTest {
     }
 
     @Test
-    void generatedLickStaysInsideSelectedScale() {
-        List<Integer> lick = GuitarTheory.generateLick(57, "A Minor Pentatonic", 8, 42L);
+    void generatedLickHasRequestedLength() {
+        List<Integer> lick = GuitarTheory.generateLick(57, "Minor Pentatonic", 8, 42L);
         assertEquals(8, lick.size());
     }
 
@@ -30,7 +30,7 @@ class GuitarTheoryTest {
         List<GuitarTheory.FretNote> overlay = GuitarTheory.scaleOverlay(9, "Blues", 12);
         assertFalse(overlay.isEmpty());
         assertTrue(overlay.stream().anyMatch(note -> note.scaleDegree() == 0));
-        assertTrue(overlay.stream().map(GuitarTheory.FretNote::stringIndex).distinct().count() >= 6);
+        assertEquals(6, overlay.stream().map(GuitarTheory.FretNote::stringIndex).distinct().count());
     }
 
     @Test
