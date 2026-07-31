@@ -43,8 +43,9 @@ export class GuitarAudioEngine {
     await this.ensureReady();
     await Promise.all(tracks.map(async (track) => {
       if (this.backingBuffers.has(track.audioUrl)) return;
-      const bytes = await this.fetchArrayBuffer(track.audioUrl, new Map());
-      const decoded = await this.context.decodeAudioData(bytes.slice(0));
+      const response = await fetch(track.audioUrl);
+      if (!response.ok) throw new Error(`Unable to preload ${track.title}.`);
+      const decoded = await this.context.decodeAudioData(await response.arrayBuffer());
       this.backingBuffers.set(track.audioUrl, decoded);
     }));
   }
@@ -74,7 +75,7 @@ export class GuitarAudioEngine {
 
     for (let index = 0; index < phrase.length && token === this.leadToken; index += 1) {
       const event = phrase[index];
-      const restMs = beatMs * Math.max(0, event.restBeats ?? 0);
+      const restMs = beatMs * Math.max(0, event.waitBeats ?? 0);
       if (restMs) await sleep(restMs);
       if (token !== this.leadToken) break;
       onStep?.(event, index);
@@ -164,8 +165,9 @@ export class GuitarAudioEngine {
     this.stopBacking();
     let buffer = this.backingBuffers.get(track.audioUrl);
     if (!buffer) {
-      const bytes = await this.fetchArrayBuffer(track.audioUrl, new Map());
-      buffer = await this.context.decodeAudioData(bytes.slice(0));
+      const response = await fetch(track.audioUrl);
+      if (!response.ok) throw new Error(`Unable to load backing track ${track.title}.`);
+      buffer = await this.context.decodeAudioData(await response.arrayBuffer());
       this.backingBuffers.set(track.audioUrl, buffer);
     }
     this.backingSource = this.context.createBufferSource();
