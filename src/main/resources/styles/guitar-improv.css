@@ -134,8 +134,3 @@
     -fx-font-size: 10px;
     -fx-text-fill: #9fb0c5;
 }
-
-@media (max-width: 900px) {
-    .studio-title { -fx-font-size: 18px; }
-    .studio-button { -fx-padding: 7 9 7 9; }
-}
