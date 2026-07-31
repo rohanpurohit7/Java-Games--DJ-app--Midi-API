@@ -6,8 +6,10 @@ export class GuitarAudioEngine {
   constructor() {
     this.context = null;
     this.synth = null;
-    this.backing = null;
-    this.backingTimer = null;
+    this.backingAudio = new Audio();
+    this.backingAudio.loop = true;
+    this.backingAudio.preload = 'auto';
+    this.backingObjectUrl = null;
     this.leadToken = 0;
     this.ready = false;
   }
@@ -25,10 +27,12 @@ export class GuitarAudioEngine {
     await this.synth.isReady;
 
     const response = await fetch('/soundfonts/freepats-clean-electric-guitar.sf2');
-    if (!response.ok) throw new Error('The bundled FreePats guitar SoundFont could not be loaded.');
+    if (!response.ok) throw new Error('The FreePats sampled guitar could not be loaded. Run npm run assets.');
     await this.synth.soundBankManager.addSoundBank(await response.arrayBuffer(), 'freepats-guitar');
     this.synth.programChange?.(0, 0);
     this.synth.setPitchWheelRange?.(0, 2);
+    this.synth.controllerChange?.(0, 91, 38);
+    this.synth.controllerChange?.(0, 93, 12);
     this.ready = true;
   }
 
@@ -37,18 +41,55 @@ export class GuitarAudioEngine {
     if (this.context.state === 'suspended') await this.context.resume();
   }
 
+  loadBackingFile(file) {
+    if (!file) return;
+    if (this.backingObjectUrl) URL.revokeObjectURL(this.backingObjectUrl);
+    this.backingObjectUrl = URL.createObjectURL(file);
+    this.backingAudio.src = this.backingObjectUrl;
+    this.backingAudio.load();
+  }
+
+  hasBackingFile() {
+    return Boolean(this.backingAudio.src);
+  }
+
+  async startBacking() {
+    if (!this.hasBackingFile()) throw new Error('Download a real backing track, then choose the audio file in the app.');
+    this.backingAudio.currentTime = this.backingAudio.ended ? 0 : this.backingAudio.currentTime;
+    await this.backingAudio.play();
+  }
+
+  pauseBacking() {
+    this.backingAudio.pause();
+  }
+
+  stopBacking() {
+    this.backingAudio.pause();
+    this.backingAudio.currentTime = 0;
+  }
+
+  backingTime() {
+    return this.backingAudio.currentTime || 0;
+  }
+
+  setBackingVolume(value) {
+    this.backingAudio.volume = Math.max(0, Math.min(1, value));
+  }
+
   async playPhrase(phrase, bpm, onStep) {
     await this.ensureReady();
     const token = ++this.leadToken;
-    const eighth = 60000 / bpm / 2;
+    const beatMs = 60000 / Math.max(40, bpm);
 
     this.synth.stopAll?.(0);
     this.synth.pitchWheel?.(0, 8192);
 
     for (let index = 0; index < phrase.length && token === this.leadToken; index += 1) {
       const event = phrase[index];
+      if (event.waitBeats > 0) await sleep(event.waitBeats * beatMs);
+      if (token !== this.leadToken) break;
       onStep?.(event, index);
-      await this.playArticulatedNote(event, eighth, token);
+      await this.playArticulatedNote(event, event.durationBeats * beatMs, token);
     }
 
     if (token === this.leadToken) {
@@ -59,48 +100,44 @@ export class GuitarAudioEngine {
   }
 
   async playArticulatedNote(event, duration, token) {
-    const velocity = Math.max(52, Math.min(124, event.velocity ?? 96));
-    const noteLength = duration * (event.length ?? 0.92);
-    const nextNote = event.targetMidi ?? event.midi;
+    const velocity = Math.max(48, Math.min(120, event.velocity ?? 92));
+    const noteLength = Math.max(90, duration);
+    const target = event.targetMidi ?? event.midi;
 
     this.synth.noteOn(0, event.midi, velocity);
 
-    if (event.technique === 'hammer-on') {
-      await sleep(noteLength * 0.42);
+    if (event.technique === 'hammer-on' || event.technique === 'pull-off') {
+      const split = event.technique === 'hammer-on' ? .44 : .38;
+      await sleep(noteLength * split);
       if (token !== this.leadToken) return;
-      this.synth.noteOn(0, nextNote, Math.max(48, velocity - 13));
+      this.synth.noteOn(0, target, Math.max(42, velocity - (event.technique === 'hammer-on' ? 10 : 16)));
       this.synth.noteOff(0, event.midi);
-      await sleep(noteLength * 0.58);
-      this.synth.noteOff(0, nextNote);
-      return;
-    }
-
-    if (event.technique === 'pull-off') {
-      await sleep(noteLength * 0.38);
-      if (token !== this.leadToken) return;
-      this.synth.noteOn(0, nextNote, Math.max(44, velocity - 18));
-      this.synth.noteOff(0, event.midi);
-      await sleep(noteLength * 0.62);
-      this.synth.noteOff(0, nextNote);
+      await sleep(noteLength * (1 - split));
+      this.synth.noteOff(0, target);
       return;
     }
 
     if (event.technique === 'bend') {
-      const frames = 10;
+      const frames = 14;
       for (let i = 1; i <= frames; i += 1) {
         this.synth.pitchWheel?.(0, 8192 + Math.round((8191 * i) / frames));
-        await sleep(noteLength * 0.58 / frames);
+        await sleep(noteLength * .48 / frames);
       }
-      await sleep(noteLength * 0.32);
+      await sleep(noteLength * .34);
+      for (let i = frames; i >= 0; i -= 1) {
+        this.synth.pitchWheel?.(0, 8192 + Math.round((8191 * i) / frames));
+        await sleep(noteLength * .14 / frames);
+      }
       this.synth.noteOff(0, event.midi);
       this.synth.pitchWheel?.(0, 8192);
       return;
     }
 
     if (event.technique === 'vibrato') {
-      const pulses = 9;
+      const pulses = Math.max(6, Math.round(noteLength / 90));
       for (let i = 0; i < pulses; i += 1) {
-        this.synth.pitchWheel?.(0, 8192 + (i % 2 === 0 ? 920 : -920));
+        const depth = 500 + Math.round(220 * Math.sin((i / pulses) * Math.PI));
+        this.synth.pitchWheel?.(0, 8192 + (i % 2 === 0 ? depth : -depth));
         await sleep(noteLength / pulses);
       }
       this.synth.noteOff(0, event.midi);
@@ -109,20 +146,22 @@ export class GuitarAudioEngine {
     }
 
     if (event.technique === 'slide') {
-      const semitones = Math.max(-4, Math.min(4, nextNote - event.midi));
-      const frames = 12;
+      const semitones = Math.max(-4, Math.min(4, target - event.midi));
+      const frames = 16;
       for (let i = 1; i <= frames; i += 1) {
         const bend = 8192 + Math.round((8191 * semitones * i) / (2 * frames));
         this.synth.pitchWheel?.(0, Math.max(0, Math.min(16383, bend)));
-        await sleep(noteLength / frames);
+        await sleep(noteLength * .68 / frames);
       }
+      await sleep(noteLength * .25);
       this.synth.noteOff(0, event.midi);
       this.synth.pitchWheel?.(0, 8192);
       return;
     }
 
-    await sleep(noteLength);
+    await sleep(noteLength * .9);
     this.synth.noteOff(0, event.midi);
+    await sleep(noteLength * .1);
   }
 
   stopLead() {
@@ -131,67 +170,10 @@ export class GuitarAudioEngine {
     this.synth?.pitchWheel?.(0, 8192);
   }
 
-  async startBacking(bpm = 92, rootMidi = 45, mode = 'minor') {
-    await this.ensureReady();
-    this.stopBacking();
-
-    const gain = this.context.createGain();
-    gain.gain.value = 0.2;
-    gain.connect(this.context.destination);
-    this.backing = gain;
-
-    const beatMs = 60000 / bpm;
-    const progression = mode === 'major' ? [0, 5, 7, 0] : [0, 5, 3, 7];
-    let beat = 0;
-
-    const scheduleBeat = () => {
-      if (!this.backing) return;
-      const chordRoot = rootMidi + progression[Math.floor(beat / 4) % progression.length];
-      const intervals = mode === 'major' ? [0, 4, 7, 10] : [0, 3, 7, 10];
-      const now = this.context.currentTime;
-
-      if (beat % 4 === 0) {
-        intervals.forEach((interval, voice) => {
-          const oscillator = this.context.createOscillator();
-          const voiceGain = this.context.createGain();
-          oscillator.type = voice === 0 ? 'triangle' : 'sine';
-          oscillator.frequency.value = 440 * 2 ** ((chordRoot + interval - 69) / 12);
-          voiceGain.gain.setValueAtTime(0.0001, now);
-          voiceGain.gain.exponentialRampToValueAtTime(0.055, now + 0.04);
-          voiceGain.gain.exponentialRampToValueAtTime(0.0001, now + beatMs * 0.0036);
-          oscillator.connect(voiceGain).connect(gain);
-          oscillator.start(now);
-          oscillator.stop(now + beatMs * 0.0038);
-        });
-      }
-
-      const bass = this.context.createOscillator();
-      const bassGain = this.context.createGain();
-      bass.type = 'triangle';
-      bass.frequency.value = 440 * 2 ** ((chordRoot - 12 - 69) / 12);
-      bassGain.gain.setValueAtTime(0.07, now);
-      bassGain.gain.exponentialRampToValueAtTime(0.0001, now + beatMs * 0.00075);
-      bass.connect(bassGain).connect(gain);
-      bass.start(now);
-      bass.stop(now + beatMs * 0.0008);
-
-      beat += 1;
-      this.backingTimer = window.setTimeout(scheduleBeat, beatMs);
-    };
-
-    scheduleBeat();
-  }
-
-  stopBacking() {
-    if (this.backingTimer) window.clearTimeout(this.backingTimer);
-    this.backingTimer = null;
-    this.backing?.disconnect();
-    this.backing = null;
-  }
-
   destroy() {
     this.stopLead();
     this.stopBacking();
+    if (this.backingObjectUrl) URL.revokeObjectURL(this.backingObjectUrl);
     this.synth?.destroy?.();
     this.context?.close?.();
   }
