@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { GuitarAudioEngine } from './audio/guitarEngine.js';
+import { BACKING_TRACKS, suggestedScale } from './music/backingCatalog.js';
 import { buildFretboard, generateLick, noteName, scalePitchClasses, SCALES } from './music/lickGenerator.js';
 
 const ROOTS = [
   ['C', 48], ['C#', 49], ['D', 50], ['D#', 51], ['E', 52], ['F', 53],
   ['F#', 54], ['G', 55], ['G#', 56], ['A', 57], ['A#', 58], ['B', 59]
 ];
+const ROOT_MIDI = Object.fromEntries(ROOTS);
 
 const TECH_LABELS = {
   pick: 'PICK',
@@ -21,9 +23,7 @@ function Knob({ label, value, onChange }) {
   return (
     <label className="knob-wrap">
       <span>{label}</span>
-      <button className="knob" style={{ '--rotation': `${rotation}deg` }} type="button" aria-label={label}>
-        <i />
-      </button>
+      <button className="knob" style={{ '--rotation': `${rotation}deg` }} type="button" aria-label={label}><i /></button>
       <input type="range" min="0" max="100" value={value} onChange={(event) => onChange(Number(event.target.value))} />
       <b>{value}</b>
     </label>
@@ -33,12 +33,15 @@ function Knob({ label, value, onChange }) {
 function App() {
   const engineRef = useRef(null);
   const continuousRef = useRef(false);
-  const [rootMidi, setRootMidi] = useState(57);
-  const [scaleName, setScaleName] = useState('Blues');
-  const [bpm, setBpm] = useState(92);
-  const [phrase, setPhrase] = useState(() => generateLick());
+  const [trackId, setTrackId] = useState(BACKING_TRACKS[0].id);
+  const track = useMemo(() => BACKING_TRACKS.find((item) => item.id === trackId) ?? BACKING_TRACKS[0], [trackId]);
+  const [rootMidi, setRootMidi] = useState(ROOT_MIDI[track.key] ?? 57);
+  const [scaleName, setScaleName] = useState(suggestedScale(track));
+  const [bpm, setBpm] = useState(track.bpm);
+  const [audioFileName, setAudioFileName] = useState('No real backing audio selected');
+  const [phrase, setPhrase] = useState(() => generateLick({ rootMidi: 52, scaleName: 'Blues', bpm: 58, feel: 'slow-blues' }));
   const [active, setActive] = useState(null);
-  const [status, setStatus] = useState('Click PLAY BACKING to initialize the FreePats guitar engine.');
+  const [status, setStatus] = useState('Choose a curated track, download it from the source page, then load the audio file.');
   const [backing, setBacking] = useState(false);
   const [continuous, setContinuous] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(true);
@@ -53,34 +56,56 @@ function App() {
     return () => engineRef.current?.destroy();
   }, []);
 
+  useEffect(() => {
+    const nextRoot = ROOT_MIDI[track.key] ?? 57;
+    const nextScale = suggestedScale(track);
+    setRootMidi(nextRoot);
+    setScaleName(nextScale);
+    setBpm(track.bpm);
+    setPhrase(generateLick({ rootMidi: nextRoot, scaleName: nextScale, feel: track.feel, mode: track.mode, length: 8 }));
+    setActive(null);
+    setBacking(false);
+    engineRef.current?.stopBacking();
+    setAudioFileName('No real backing audio selected');
+    setStatus(`Selected ${track.title}: ${track.key} ${track.mode}, ${track.bpm} BPM, ${track.feel}. Download and load its audio.`);
+  }, [track]);
+
   const makePhrase = () => {
-    const next = generateLick({ rootMidi, scaleName, length: 12 });
+    const next = generateLick({ rootMidi, scaleName, feel: track.feel, mode: track.mode, length: 8 });
     setPhrase(next);
     setActive(null);
-    setStatus('New one-position-at-a-time articulated lick generated.');
+    setStatus(`Generated a spacious ${track.feel} phrase that resolves in ${track.key} ${track.mode}.`);
     return next;
   };
 
   const playPhrase = async (selectedPhrase = phrase) => {
     try {
-      setStatus('Playing articulated FreePats guitar over the backing lane...');
+      setStatus(`Playing a paced ${track.feel} guitar phrase at ${bpm} BPM over the real backing lane...`);
       await engineRef.current.playPhrase(selectedPhrase, bpm, (event) => setActive(event));
-      if (!continuousRef.current) setStatus('Lick complete. The backing lane remains independent.');
+      if (!continuousRef.current) setStatus('Phrase complete. The backing track continues independently.');
     } catch (error) {
       setStatus(error.message);
     }
   };
 
+  const loadBacking = (file) => {
+    if (!file) return;
+    engineRef.current.loadBackingFile(file);
+    engineRef.current.setBackingVolume(.82);
+    setAudioFileName(file.name);
+    setStatus(`Loaded ${file.name}. Track metadata is set to ${track.key} ${track.mode}, ${track.bpm} BPM.`);
+  };
+
   const toggleBacking = async () => {
     try {
       if (backing) {
-        engineRef.current.stopBacking();
+        engineRef.current.pauseBacking();
         setBacking(false);
-        setStatus('Backing stopped.');
+        setStatus('Backing paused at its current position.');
       } else {
-        await engineRef.current.startBacking(bpm, rootMidi - 12, scaleName.includes('Major') || scaleName === 'Mixolydian' ? 'major' : 'minor');
+        await engineRef.current.startBacking();
         setBacking(true);
-        setStatus('Backing playing on its own audio lane.');
+        setStatus(`Playing real audio: ${audioFileName}. Generated licks use its BPM, feel and key.`);
       }
     } catch (error) {
       setStatus(error.message);
@@ -96,12 +121,15 @@ function App() {
       setStatus('Continuous improvisation stopped; backing is unchanged.');
       return;
     }
-    if (!backing) await toggleBacking();
+    if (!backing) {
+      try { await engineRef.current.startBacking(); setBacking(true); }
+      catch (error) { setContinuous(false); continuousRef.current = false; setStatus(error.message); return; }
+    }
     while (continuousRef.current) {
-      const next = generateLick({ rootMidi, scaleName, length: 9 + Math.floor(Math.random() * 5) });
+      const next = generateLick({ rootMidi, scaleName, feel: track.feel, mode: track.mode, length: 6 + Math.floor(Math.random() * 4) });
       setPhrase(next);
       await playPhrase(next);
-      await new Promise((resolve) => setTimeout(resolve, Math.max(110, 60000 / bpm / 3)));
+      await new Promise((resolve) => setTimeout(resolve, Math.max(180, 60000 / bpm * .75)));
     }
   };
 
@@ -117,12 +145,33 @@ function App() {
     <main className="app-shell">
       <header className="topbar">
         <div>
-          <span className="eyebrow">WEB AUDIO • SF2 • REACT</span>
+          <span className="eyebrow">REAL AUDIO • SAMPLED GUITAR • GROOVE-AWARE PHRASES</span>
           <h1>AMP STUDIO <em>GUITAR</em></h1>
-          <p>Scale-aware improvisation with a continuous backing lane and one fret position highlighted at a time.</p>
+          <p>Download a real Creative Commons backing track, load it locally, and improvise with slow, articulated phrases shaped to its key, BPM and feel.</p>
         </div>
         <div className={`status-led ${backing ? 'live' : ''}`}><i />{status}</div>
       </header>
+
+      <section className="track-browser panel">
+        <div className="track-copy">
+          <span className="eyebrow">CURATED REAL-AUDIO LIBRARY</span>
+          <h2>{track.title}</h2>
+          <p>{track.artist} · {track.genre} · {track.key} {track.mode} · {track.bpm} BPM · {track.meter}</p>
+          <div className="chord-row">{track.chords.map((chord) => <b key={chord}>{chord}</b>)}</div>
+        </div>
+        <div className="track-actions">
+          <label>BACKING TRACK
+            <select value={trackId} onChange={(event) => setTrackId(event.target.value)}>
+              {BACKING_TRACKS.map((item) => <option key={item.id} value={item.id}>{item.title} — {item.genre} — {item.key} — {item.bpm} BPM</option>)}
+            </select>
+          </label>
+          <a className="download-link" href={track.source} target="_blank" rel="noreferrer">OPEN DOWNLOAD PAGE</a>
+          <label className="file-button">LOAD DOWNLOADED AUDIO
+            <input type="file" accept="audio/*,.wav,.mp3,.flac,.ogg,.m4a" onChange={(event) => loadBacking(event.target.files?.[0])} />
+          </label>
+          <small>{audioFileName} · {track.license}</small>
+        </div>
+      </section>
 
       <section className="studio-grid">
         <article className="panel fret-panel">
@@ -131,7 +180,7 @@ function App() {
             <div className="selectors">
               <label>KEY<select value={rootMidi} onChange={(event) => setRootMidi(Number(event.target.value))}>{ROOTS.map(([name, midi]) => <option key={name} value={midi}>{name}</option>)}</select></label>
               <label>SCALE<select value={scaleName} onChange={(event) => setScaleName(event.target.value)}>{Object.keys(SCALES).map((name) => <option key={name}>{name}</option>)}</select></label>
-              <label>BPM<input type="number" min="55" max="180" value={bpm} onChange={(event) => setBpm(Number(event.target.value))} /></label>
+              <label>BPM<input type="number" min="40" max="220" value={bpm} onChange={(event) => setBpm(Number(event.target.value))} /></label>
             </div>
           </div>
 
@@ -153,16 +202,16 @@ function App() {
           </div>
 
           <div className="phrase-strip">
-            {phrase.map((event, index) => <div key={`${event.id}-${index}`} className={active === event ? 'now' : ''}><b>{noteName(event.midi)}</b><span>S{event.stringNumber} F{event.fret}</span><em>{TECH_LABELS[event.technique]}</em></div>)}
+            {phrase.map((event, index) => <div key={`${event.id}-${index}`} className={active === event ? 'now' : ''}><b>{noteName(event.midi)}</b><span>S{event.stringNumber} F{event.fret}</span><em>{TECH_LABELS[event.technique]}</em><small>{event.waitBeats.toFixed(2)} beat rest · {event.durationBeats.toFixed(2)} beat note</small></div>)}
           </div>
         </article>
 
         <aside className="panel amp-panel">
           <div className="guitar-image">
-            {imageLoaded && <img src="/assets/studio-electric-guitar.jpg" alt="Studio-lit electric guitar" onError={() => setImageLoaded(false)} />}
-            {!imageLoaded && <div className="image-fallback"><strong>STUDIO ELECTRIC</strong><span>Asset will be installed by npm run assets</span></div>}
+            {imageLoaded && <img src="/assets/studio-electric-guitar.jpg" alt="Studio-lit sampled electric guitar" onError={() => setImageLoaded(false)} />}
+            {!imageLoaded && <div className="image-fallback"><strong>FREEPATS CLEAN ELECTRIC</strong><span>Run npm run assets to install the guitar image and sampled instrument.</span></div>}
             <div className="image-vignette" />
-            <div className="image-caption"><span>SELECTED INSTRUMENT</span><b>FreePats Clean Electric</b><small>CC0 sampled guitar • bridge pickup</small></div>
+            <div className="image-caption"><span>SELECTED INSTRUMENT</span><b>FreePats Clean Electric</b><small>CC0 multisampled guitar · expressive lead</small></div>
           </div>
 
           <div className="amp-face">
@@ -170,14 +219,14 @@ function App() {
             <div className="knob-grid">
               {Object.entries(tone).map(([name, value]) => <Knob key={name} label={name.toUpperCase()} value={value} onChange={(next) => setTone((current) => ({ ...current, [name]: next }))} />)}
             </div>
-            <div className="speaker-grille"><div className="speaker" /><span>FREEPATS SF2 SIGNAL CHAIN</span></div>
+            <div className="speaker-grille"><div className="speaker" /><span>FREEPATS SAMPLED GUITAR SIGNAL CHAIN</span></div>
           </div>
         </aside>
       </section>
 
       <nav className="transport">
-        <button onClick={toggleBacking} className={backing ? 'active' : ''}>{backing ? 'STOP BACKING' : 'PLAY BACKING'}</button>
-        <button onClick={makePhrase}>GENERATE LICK</button>
+        <button onClick={toggleBacking} className={backing ? 'active' : ''}>{backing ? 'PAUSE REAL BACKING' : 'PLAY REAL BACKING'}</button>
+        <button onClick={makePhrase}>GENERATE GROOVED LICK</button>
         <button onClick={() => playPhrase()}>PLAY LICK OVER BAND</button>
         <button onClick={startContinuous} className={continuous ? 'danger' : ''}>{continuous ? 'STOP CONTINUOUS' : 'PLAY CONTINUOUS IMPROV'}</button>
         <button onClick={stopLead}>STOP LEAD</button>
