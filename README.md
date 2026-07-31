@@ -2,6 +2,12 @@
 
 The project is now a guitar-first JavaFX improvisation trainer. Its primary experience combines generated MIDI backing bands, scale overlays, animated guitar licks, lick variation generation, and a persistent saved-lick library. The original MIDI DJ Box remains available inside the application as an advanced backing-groove editor.
 
+## Start Here
+
+- [Guitar Improvisation Demo with annotated screenshots](docs/GUITAR_IMPROV_DEMO.md)
+- [DevOps build and quality gate](.github/workflows/guitar-improv-devops-gate.yml)
+- Run locally with `gradle run`
+
 ## Main Guitar Features
 
 - Electric-guitar fretboard covering six strings and frets 0–12
@@ -19,21 +25,22 @@ The project is now a guitar-first JavaFX improvisation trainer. Its primary expe
 
 1. Choose a backing-band style.
 2. Select a key and scale.
-3. Press `PLAY BACKING` to start the generated orchestra.
+3. Start the generated backing band.
 4. Improvise using the highlighted fretboard notes.
 5. Press `GENERATE NEW LICK` for a suggested phrase.
-6. Press `PLAY / ANIMATE LICK` to hear it and watch the notes move across the fretboard.
+6. Play the animated lick to hear it and watch the notes move across the fretboard.
 7. Press `GENERATE VARIATION` to create a related phrase.
 8. Press `SAVE LICK` to add it to `saved-guitar-licks.txt`.
-9. Double-click a saved entry or use `LOAD SELECTED` to restore it.
+9. Select a saved entry and use `LOAD SELECTED` to restore it.
 10. Open the legacy DJ Box when you want to manually design the backing groove.
 
 ## Architecture
 
 ```text
 GuitarImprovisationStudioApp
+|-- GuitarTheory headless scale and lick engine
 |-- key + scale model
-|-- generated lick engine
+|-- generated lick and variation engine
 |-- animated JavaFX fretboard
 |-- saved lick library
 |-- MIDI backing-band sequencer
@@ -61,14 +68,29 @@ The original application remains available at:
 io.github.rohanpurohit7.mididj.MidiDjBoxFxApp
 ```
 
+## Test and Build
+
+Run the same core compilation and unit-test tasks used by the DevOps gate:
+
+```bash
+gradle --no-daemon clean test classes
+```
+
+The test suite validates scale intervals, fretboard overlays, scale-safe lick generation, phrase variations, and invalid-input handling. GitHub Actions additionally verifies the demo files, both application entry points, local-only lick persistence, and obvious committed-secret patterns.
+
 ## Project Layout
 
 ```text
 README.md
 |-- build.gradle
+|-- .github/workflows/guitar-improv-devops-gate.yml
+|-- docs/GUITAR_IMPROV_DEMO.md
+|-- docs/screenshots/*.svg
 |-- src/main/java/io/github/rohanpurohit7/mididj/
 |   |-- GuitarImprovisationStudioApp.java
+|   |-- GuitarTheory.java
 |   `-- MidiDjBoxFxApp.java
+|-- src/test/java/io/github/rohanpurohit7/mididj/GuitarTheoryTest.java
 |-- src/main/resources/styles/
 |   |-- guitar-improv.css
 |   `-- midi-djbox.css
