@@ -2,23 +2,121 @@
 
 A React and Web Audio guitar-improvisation studio with an amplifier-inspired interface, an independent backing lane, articulated one-note-at-a-time lick playback, continuous scale-aware improvisation, and a bundled open FreePats guitar SoundFont.
 
-## Run the web app
+## Launch the application
 
-Requirements: Node.js 22 or newer.
+### Requirements
+
+- Node.js 22 or newer
+- npm 10 or newer
+- A current Chrome, Edge, Firefox, or Safari browser
+- Internet access during the first asset-preparation run
+
+Check your installed versions:
 
 ```bash
+node --version
+npm --version
+```
+
+### First launch on Windows, macOS, or Linux
+
+Clone the repository and enter its directory:
+
+```bash
+git clone https://github.com/rohanpurohit7/AmpStudioGuitarApp.git
+cd AmpStudioGuitarApp
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open this address in your browser:
+
+```text
+http://localhost:5173
+```
+
+Vite also prints the exact local URL in the terminal. Keep the terminal window open while using the application. Press `Ctrl+C` in the terminal to stop it.
+
+### Windows PowerShell quick start
+
+```powershell
+git clone https://github.com/rohanpurohit7/AmpStudioGuitarApp.git
+Set-Location AmpStudioGuitarApp
 npm install
 npm run dev
 ```
 
-Create a production build with:
+### Production build and local preview
+
+Create the optimized web build:
 
 ```bash
 npm run build
+```
+
+The deployable application is written to:
+
+```text
+dist/
+```
+
+Preview the production build locally:
+
+```bash
 npm run preview
 ```
 
-`npm install`/`npm run build` prepares the browser audio worklet, downloads the small CC0 FreePats clean-electric-guitar SF2 archive, extracts the SoundFont into `public/soundfonts`, and downloads the licensed guitar photograph used by the interface.
+Then open the URL printed by Vite, normally:
+
+```text
+http://localhost:4173
+```
+
+### First-run audio and image preparation
+
+Before development and production builds, the npm scripts run:
+
+```bash
+npm run assets
+```
+
+This process:
+
+1. Copies the SpessaSynth browser audio worklet into `public/`.
+2. Downloads the CC0 FreePats clean-electric-guitar archive.
+3. Extracts the `.sf2` bank into `public/soundfonts/`.
+4. Downloads the licensed guitar photograph into `public/assets/`.
+
+Prepared files include:
+
+```text
+public/spessasynth_processor.min.js
+public/soundfonts/freepats-clean-electric-guitar.sf2
+public/assets/studio-electric-guitar.jpg
+```
+
+After these files exist, later launches reuse them instead of downloading them again.
+
+### Starting audio in the browser
+
+Browsers block audio until the user interacts with the page. After the interface opens:
+
+1. Click **PLAY BACKING** to initialize Web Audio and load the bundled SoundFont.
+2. Click **GENERATE LICK**.
+3. Click **PLAY LICK OVER BAND**.
+4. Confirm that one string/fret position is highlighted at a time while the backing continues.
+5. Use **PLAY CONTINUOUS IMPROV** for ongoing articulated phrases.
+6. Use **STOP LEAD** to stop the guitar without stopping the backing.
 
 ## Core experience
 
