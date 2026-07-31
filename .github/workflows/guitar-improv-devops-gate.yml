@@ -33,28 +33,49 @@ jobs:
       - name: Compile application and run unit tests
         run: gradle --no-daemon clean test classes
 
-      - name: Verify studio and legacy entry points
+      - name: Verify responsive primary and legacy entry points
         shell: bash
         run: |
           set -euo pipefail
+          test -f src/main/java/io/github/rohanpurohit7/mididj/ResponsiveAdaptiveStudioGuitarApp.java
+          test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/StudioQualityGuitarApp.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/StudioBackingCatalog.java
-          test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarImprovisationStudioApp.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/MidiDjBoxFxApp.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarTheory.java
-          grep -q "StudioQualityGuitarApp" build.gradle
+          grep -q "ResponsiveAdaptiveStudioGuitarApp" build.gradle
           grep -q "javafx.media" build.gradle
 
-      - name: Verify studio capabilities
+      - name: Verify restored controls and responsive layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP=src/main/java/io/github/rohanpurohit7/mididj/ResponsiveAdaptiveStudioGuitarApp.java
+          grep -q 'PLAY STUDIO BACKING' "$APP"
+          grep -q 'STOP ALL' "$APP"
+          grep -q 'GENERATE NEW LICK' "$APP"
+          grep -q 'GENERATE VARIATION' "$APP"
+          grep -q 'PLAY / ANIMATE LICK' "$APP"
+          grep -q 'SAVE LICK' "$APP"
+          grep -q 'LOAD SELECTED LICK' "$APP"
+          grep -q 'AI SUGGEST' "$APP"
+          grep -q 'OPEN DJ BACKING EDITOR' "$APP"
+          grep -q 'OPEN FULL STUDIO' "$APP"
+          grep -q 'ScrollPane' "$APP"
+          grep -q 'updateResponsiveLayout' "$APP"
+          grep -q 'FlowPane' "$APP"
+
+      - name: Verify studio and photo capabilities
         shell: bash
         run: |
           set -euo pipefail
           grep -q "loadSoundFont" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
           grep -q "playLosslessBacking" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
           grep -q "ToneSettings" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
-          grep -q "GUITAR TONE OVERLAY" src/main/java/io/github/rohanpurohit7/mididj/StudioQualityGuitarApp.java
-          grep -q "CHOOSE LOSSLESS BACKING LIBRARY" src/main/java/io/github/rohanpurohit7/mididj/StudioQualityGuitarApp.java
+          grep -q "commons.wikimedia.org" src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
+          grep -q "CC BY-SA" src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
+          grep -q "setPreserveRatio(true)" src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
 
       - name: Upload test report
         if: always()
@@ -83,7 +104,7 @@ jobs:
           grep -q "WAV" docs/STUDIO_AUDIO_SETUP.md
           grep -q "30" docs/STUDIO_AUDIO_SETUP.md
 
-      - name: Block obvious committed secrets and unlicensed audio binaries
+      - name: Block obvious committed secrets and undocumented audio binaries
         shell: bash
         run: |
           set -euo pipefail
@@ -98,11 +119,11 @@ jobs:
           fi
 
   release-gate:
-    name: Studio Audio Release Gate
+    name: Responsive Studio Release Gate
     needs: [compile-and-test, documentation-and-safety]
     runs-on: ubuntu-latest
     steps:
       - name: Gate passed
         run: |
-          echo 'Studio Guitar Improvisation quality gate passed.'
-          echo 'Compilation, tests, SoundFont support, lossless backing support, tone controls, catalog, docs, and asset safety are valid.'
+          echo 'Responsive Studio Guitar Improvisation quality gate passed.'
+          echo 'Compilation, tests, restored controls, responsive layout, licensed photo sourcing, studio audio, and asset safety are valid.'
