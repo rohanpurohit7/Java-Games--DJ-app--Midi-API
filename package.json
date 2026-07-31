@@ -1,0 +1,26 @@
+{
+  "name": "amp-studio-guitar-app",
+  "private": true,
+  "version": "6.0.0",
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/prepare-assets.mjs",
+    "predev": "npm run assets",
+    "dev": "vite",
+    "prebuild": "npm run assets",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "spessasynth_core": "^4.3.0",
+    "spessasynth_lib": "^4.3.0"
+  },
+  "devDependencies": {
+    "7zip-bin": "latest",
+    "node-7z": "latest",
+    "vite": "latest"
+  }
+}
