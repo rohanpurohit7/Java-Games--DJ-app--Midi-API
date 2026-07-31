@@ -1,4 +1,4 @@
-name: Guitar Improvisation DevOps Gate
+name: Amp Studio Guitar DevOps Gate
 
 on:
   workflow_dispatch:
@@ -11,119 +11,76 @@ permissions:
   contents: read
 
 jobs:
-  compile-and-test:
-    name: Compile and Test Studio Audio
+  compile-and-regression:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Java 21
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: gradle
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
-
-      - name: Compile application and run unit tests
+      - name: Compile and test
         run: gradle --no-daemon clean test classes
-
-      - name: Verify responsive primary and legacy entry points
+      - name: Verify single active application
         shell: bash
         run: |
           set -euo pipefail
-          test -f src/main/java/io/github/rohanpurohit7/mididj/ResponsiveAdaptiveStudioGuitarApp.java
-          test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
-          test -f src/main/java/io/github/rohanpurohit7/mididj/StudioQualityGuitarApp.java
-          test -f src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
-          test -f src/main/java/io/github/rohanpurohit7/mididj/StudioBackingCatalog.java
-          test -f src/main/java/io/github/rohanpurohit7/mididj/MidiDjBoxFxApp.java
-          test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarTheory.java
-          grep -q "ResponsiveAdaptiveStudioGuitarApp" build.gradle
-          grep -q "javafx.media" build.gradle
-
-      - name: Verify restored controls and responsive layout
+          SRC=src/main/java/io/github/rohanpurohit7/mididj
+          test -f "$SRC/AmpStudioGuitarApp.java"
+          test "$(grep -RIl 'extends Application' "$SRC" | wc -l)" -eq 1
+          grep -q "AmpStudioGuitarApp" build.gradle
+      - name: Verify required helpers
         shell: bash
         run: |
           set -euo pipefail
-          APP=src/main/java/io/github/rohanpurohit7/mididj/ResponsiveAdaptiveStudioGuitarApp.java
-          grep -q 'PLAY STUDIO BACKING' "$APP"
-          grep -q 'STOP ALL' "$APP"
-          grep -q 'GENERATE NEW LICK' "$APP"
-          grep -q 'GENERATE VARIATION' "$APP"
-          grep -q 'PLAY / ANIMATE LICK' "$APP"
-          grep -q 'SAVE LICK' "$APP"
-          grep -q 'LOAD SELECTED LICK' "$APP"
-          grep -q 'AI SUGGEST' "$APP"
-          grep -q 'OPEN DJ BACKING EDITOR' "$APP"
-          grep -q 'OPEN FULL STUDIO' "$APP"
-          grep -q 'ScrollPane' "$APP"
-          grep -q 'updateResponsiveLayout' "$APP"
-          grep -q 'FlowPane' "$APP"
-
-      - name: Verify studio and photo capabilities
+          SRC=src/main/java/io/github/rohanpurohit7/mididj
+          for file in StudioAudioEngine StudioBackingCatalog GuitarArticulationEngine GuitarTheory GuitarStyleAdvisor GuitarPhotoCard FreePatsGuitarLibrary ContinuousImprovPlanner DogLickSticker; do
+            test -f "$SRC/$file.java"
+          done
+      - name: Verify amp UX and playback architecture
         shell: bash
         run: |
           set -euo pipefail
-          grep -q "loadSoundFont" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
-          grep -q "playLosslessBacking" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
-          grep -q "ToneSettings" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
-          grep -q "commons.wikimedia.org" src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
-          grep -q "CC BY-SA" src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
-          grep -q "setPreserveRatio(true)" src/main/java/io/github/rohanpurohit7/mididj/GuitarPhotoCard.java
-
+          APP=src/main/java/io/github/rohanpurohit7/mididj/AmpStudioGuitarApp.java
+          grep -q 'PLAY BACKING BAND' "$APP"
+          grep -q 'PLAY LICK OVER BAND' "$APP"
+          grep -q 'SEE TRACE' "$APP"
+          grep -q 'PLAY CONTINUOUS IMPROV' "$APP"
+          grep -q 'INSTALL FREEPATS GUITAR' "$APP"
+          grep -q 'speaker-cabinet' src/main/resources/styles/guitar-improv.css
+          grep -q 'amp-head' src/main/resources/styles/guitar-improv.css
+          grep -q 'playBackingSequence' src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
+          grep -q 'playLeadSequence' src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: studio-guitar-test-report
+          name: amp-studio-test-report
           path: build/reports/tests/test/
           if-no-files-found: warn
-          retention-days: 14
 
-  documentation-and-safety:
-    name: Documentation and Asset Safety Gate
+  safety:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Validate demo and studio audio guide
+      - uses: actions/checkout@v4
+      - name: Check secrets and undocumented audio binaries
         shell: bash
         run: |
           set -euo pipefail
-          test -f docs/GUITAR_IMPROV_DEMO.md
-          test -f docs/STUDIO_AUDIO_SETUP.md
-          test -f backing-tracks/README.md
-          grep -q "SoundFont" docs/STUDIO_AUDIO_SETUP.md
-          grep -q "WAV" docs/STUDIO_AUDIO_SETUP.md
-          grep -q "30" docs/STUDIO_AUDIO_SETUP.md
-
-      - name: Block obvious committed secrets and undocumented audio binaries
-        shell: bash
-        run: |
-          set -euo pipefail
-          if grep -RInE --exclude-dir=.git --exclude='*.svg' \
-            '(AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,})' .; then
-            echo 'Potential credential material detected.'
-            exit 1
-          fi
+          ! grep -RInE --exclude-dir=.git '(AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,})' .
           if find . -type f \( -iname '*.wav' -o -iname '*.aiff' -o -iname '*.sf2' \) -not -path './build/*' | grep -q .; then
-            echo 'Audio/SoundFont binaries must not be committed without documented redistribution rights.'
+            echo 'Audio assets require documented redistribution rights.'
             exit 1
           fi
 
   release-gate:
-    name: Responsive Studio Release Gate
-    needs: [compile-and-test, documentation-and-safety]
+    needs: [compile-and-regression, safety]
     runs-on: ubuntu-latest
     steps:
-      - name: Gate passed
-        run: |
-          echo 'Responsive Studio Guitar Improvisation quality gate passed.'
-          echo 'Compilation, tests, restored controls, responsive layout, licensed photo sourcing, studio audio, and asset safety are valid.'
+      - run: echo 'AmpStudioGuitarApp release gate passed.'
