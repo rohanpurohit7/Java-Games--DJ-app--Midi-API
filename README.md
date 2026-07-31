@@ -1,115 +1,244 @@
-# Electric Guitar Improvisation Studio + MIDI DJ Box
+# Amp Studio Guitar App
 
-The project is now a guitar-first JavaFX improvisation trainer. Its primary experience combines generated MIDI backing bands, scale overlays, animated guitar licks, lick variation generation, and a persistent saved-lick library. The original MIDI DJ Box remains available inside the application as an advanced backing-groove editor.
+A JavaFX electric-guitar improvisation studio built around an amplifier-style interface, independent backing and lead playback, scale-aware lick generation, articulated fretboard tracing, continuous improvisation, and optional SoundFont guitar tones.
 
-## Start Here
-
-- [Guitar Improvisation Demo with annotated screenshots](docs/GUITAR_IMPROV_DEMO.md)
-- [DevOps build and quality gate](.github/workflows/guitar-improv-devops-gate.yml)
-- Run locally with `gradle run`
-
-## Main Guitar Features
-
-- Electric-guitar fretboard covering six strings and frets 0–12
-- Key and scale overlays with separately highlighted root notes
-- Minor pentatonic, blues, major pentatonic, natural minor, Dorian, Mixolydian, and Phrygian dominant choices
-- Generated backing bands for blues rock, classic rock, funk, ambient minor, Spanish fusion, and world-orchestra styles
-- Animated lick playback showing each note on the fretboard in time with MIDI
-- `GENERATE NEW LICK` for a fresh scale-aware phrase
-- `GENERATE VARIATION` to mutate the current phrase while retaining part of its shape
-- `SAVE LICK` and `LOAD SELECTED` for a persistent personal lick library
-- Generated MIDI accompaniment rather than copied or embedded commercial backing audio
-- Original orchestra/DJ groove interface available through `OPEN LEGACY DJ BOX`
-
-## Guitar Workflow
-
-1. Choose a backing-band style.
-2. Select a key and scale.
-3. Start the generated backing band.
-4. Improvise using the highlighted fretboard notes.
-5. Press `GENERATE NEW LICK` for a suggested phrase.
-6. Play the animated lick to hear it and watch the notes move across the fretboard.
-7. Press `GENERATE VARIATION` to create a related phrase.
-8. Press `SAVE LICK` to add it to `saved-guitar-licks.txt`.
-9. Select a saved entry and use `LOAD SELECTED` to restore it.
-10. Open the legacy DJ Box when you want to manually design the backing groove.
-
-## Architecture
+The active application is:
 
 ```text
-GuitarImprovisationStudioApp
-|-- GuitarTheory headless scale and lick engine
-|-- key + scale model
-|-- generated lick and variation engine
-|-- animated JavaFX fretboard
-|-- saved lick library
-|-- MIDI backing-band sequencer
-|-- MIDI lead-guitar sequencer
-`-- launch legacy MidiDjBoxFxApp as backing editor
+io.github.rohanpurohit7.mididj.AmpStudioGuitarApp
 ```
 
-## Run
-
-Use JDK 21 or newer.
+Run it with:
 
 ```bash
 gradle run
 ```
 
-The Gradle application entry point is:
+## Core Experience
+
+1. Choose a backing style, key, and scale.
+2. Start the backing band.
+3. Generate a scale-aware guitar lick.
+4. Play the lick over the backing without replacing the accompaniment.
+5. Follow the note path and articulation symbols on the fretboard.
+6. Use trace-only mode to study the phrase silently.
+7. Start continuous improvisation for an ongoing stream of generated phrases.
+8. Adjust the amp-style tone controls or apply the recommended guitar and tone profile.
+9. Install or load a supported guitar SoundFont for more realistic playback.
+
+## Main Features
+
+### Independent backing and lead playback
+
+The audio engine uses separate playback lanes for accompaniment and lead guitar. Starting, regenerating, stopping, or tracing a lead phrase does not intentionally stop the active backing band.
+
+Backing can use:
+
+- Generated MIDI arrangements
+- User-selected WAV or AIFF backing tracks
+- Continuous looping while lead phrases play on a separate lane
+
+### Guitar lick generation
+
+The app generates phrases from the selected key and scale, including:
+
+- Minor Pentatonic
+- Blues
+- Major Pentatonic
+- Natural Minor
+- Dorian
+- Mixolydian
+- Phrygian Dominant
+
+Generated phrases can be turned into related variations and used as the basis for continuous improvisation.
+
+### Articulated guitar playback
+
+The lead engine models guitar-oriented techniques through MIDI timing, note transitions, velocity, pitch bend, modulation, and phrase shaping.
+
+Supported articulation concepts include:
+
+- Hammer-ons — `H`
+- Pull-offs — `P`
+- Bends — `B↑`
+- Vibrato — `~`
+- Slides — `/`
+- Picked notes
+
+The active technique is shown on the fretboard while the phrase plays.
+
+### Two continuous-improvisation modes
+
+The interface keeps continuous improvisation intentionally simple:
+
+- **SEE TRACE** — displays the continuing fretboard path without lead audio
+- **PLAY CONTINUOUS IMPROV** — plays theory-aware articulated phrases over the backing band
+
+The phrase stream alternates between new motifs and variations so it does not simply repeat one fixed lick.
+
+### Amp-style tone controls
+
+The responsive amp panel includes controls for:
+
+- Twang
+- Warmth
+- Drive
+- Brightness
+- Sustain
+- Reverb
+- Chorus
+- Vibrato
+- Human feel
+
+The recommendation engine can select a scale, generic guitar archetype, pickup position, and tone profile for the chosen backing style. All settings remain manually adjustable.
+
+### Guitar SoundFont support
+
+The app supports external `.sf2` SoundFonts through the Java Sound synthesizer.
+
+The **INSTALL FREEPATS GUITAR** control installs the configured open-license guitar library when the remote package is available. Previously installed compatible SoundFonts can be loaded automatically. Java's default General MIDI soundbank remains a fallback when no external guitar bank is available.
+
+A SoundFont can improve the sampled guitar timbre, but realism still depends on the quality and articulation coverage of the selected library.
+
+### Fretboard visualization
+
+The six-string fretboard displays:
+
+- Frets 0–12
+- Notes in the selected scale
+- Root notes
+- The currently active lick note
+- Technique-specific highlighting for hammer-ons, pull-offs, bends, vibrato, and slides
+
+### Responsive amplifier interface
+
+The JavaFX interface includes:
+
+- Amp-head control panel
+- Speaker-cabinet fretboard area
+- Responsive wide and narrow layouts
+- Scrollable fretboard where needed
+- Real guitar photograph panel with source attribution
+- Optional tongue-out dog reaction stickers after selected actions
+
+## Current Controls
 
 ```text
-io.github.rohanpurohit7.mididj.GuitarImprovisationStudioApp
+PLAY BACKING BAND
+GENERATE LICK
+PLAY LICK OVER BAND
+SEE TRACE
+PLAY CONTINUOUS IMPROV
+STOP LEAD / TRACE
+STOP BAND
+INSTALL FREEPATS GUITAR
+CHOOSE WAV/AIFF BAND
+AI MATCH GUITAR + TONE
+APPLY AMP SETTINGS
 ```
 
-The original application remains available at:
+## Requirements
 
-```text
-io.github.rohanpurohit7.mididj.MidiDjBoxFxApp
-```
+- JDK 21 or newer
+- Gradle 8.x
+- JavaFX 21
+- Graphical desktop environment
+- Working MIDI synthesizer
+- Internet access for remote SoundFont installation and guitar photographs
 
-## Test and Build
-
-Run the same core compilation and unit-test tasks used by the DevOps gate:
+## Build and Run
 
 ```bash
-gradle --no-daemon clean test classes
+gradle clean classes
+gradle run
 ```
 
-The test suite validates scale intervals, fretboard overlays, scale-safe lick generation, phrase variations, and invalid-input handling. GitHub Actions additionally verifies the demo files, both application entry points, local-only lick persistence, and obvious committed-secret patterns.
+The Gradle entry point is configured as:
 
-## Project Layout
+```groovy
+application {
+    mainClass = 'io.github.rohanpurohit7.mididj.AmpStudioGuitarApp'
+}
+```
+
+## Active Source Layout
 
 ```text
-README.md
-|-- build.gradle
-|-- .github/workflows/guitar-improv-devops-gate.yml
-|-- docs/GUITAR_IMPROV_DEMO.md
-|-- docs/screenshots/*.svg
-|-- src/main/java/io/github/rohanpurohit7/mididj/
-|   |-- GuitarImprovisationStudioApp.java
-|   |-- GuitarTheory.java
-|   `-- MidiDjBoxFxApp.java
-|-- src/test/java/io/github/rohanpurohit7/mididj/GuitarTheoryTest.java
-|-- src/main/resources/styles/
-|   |-- guitar-improv.css
-|   `-- midi-djbox.css
-`-- musicbox.java
+src/main/java/io/github/rohanpurohit7/mididj/
+├── AmpStudioGuitarApp.java
+├── StudioAudioEngine.java
+├── StudioBackingCatalog.java
+├── GuitarArticulationEngine.java
+├── GuitarTheory.java
+├── GuitarStyleAdvisor.java
+├── GuitarPhotoCard.java
+├── FreePatsGuitarLibrary.java
+├── ContinuousImprovPlanner.java
+└── DogLickSticker.java
 ```
 
-## Original DJ and Orchestra Features
+### Class responsibilities
 
-The preserved DJ Box includes:
+| Class | Responsibility |
+|---|---|
+| `AmpStudioGuitarApp` | Main JavaFX application, amp interface, fretboard, controls, playback coordination |
+| `StudioAudioEngine` | Independent backing and lead sequencers, lossless backing playback, SoundFont loading, tone controls |
+| `StudioBackingCatalog` | Backing-style definitions, tempo, programs, progressions, and optional stem names |
+| `GuitarArticulationEngine` | Articulation selection and articulated MIDI sequence generation |
+| `GuitarTheory` | Scales, fretboard mappings, lick generation, and phrase variation |
+| `GuitarStyleAdvisor` | Explainable scale, guitar-archetype, pickup, and tone recommendations |
+| `GuitarPhotoCard` | Responsive licensed guitar-photo display and attribution |
+| `FreePatsGuitarLibrary` | Open-license guitar SoundFont download and installation support |
+| `ContinuousImprovPlanner` | Stateful continuous phrase and motif-variation planning |
+| `DogLickSticker` | Temporary reaction-photo overlays with original captions |
 
-- JavaFX desktop GUI
-- Winamp-style dark player skin
-- 16 instruments × 16 beat steps
-- Indian, Japanese, Chinese, Hungarian, Spanish, English, Mexican, Arabic, and African-inspired orchestra panels
-- AI Groove Builder based on raag, mode, maqam, folk-scale, and drum-cycle presets
-- Java Sound MIDI playback
-- Save/load pattern support
-- Tempo control and demo grooves
+## Audio Architecture
 
-## Safety and Content
+```text
+Generated MIDI backing ──> Backing sequencer ──┐
+                                               ├──> Synthesizer / audio output
+Articulated guitar lick ──> Lead sequencer ────┘
 
-Backing tracks and licks are generated locally through the Java Sound MIDI API. The repository does not copy commercial recordings or backing tracks from third-party services.
+WAV or AIFF backing ──────> JavaFX MediaPlayer
+```
+
+The independent lanes are intended to let a lead lick or continuous improvisation play over the accompaniment instead of replacing it.
+
+## Backing-Track Library
+
+To use recorded backing tracks:
+
+1. Prepare legally licensed WAV or AIFF files.
+2. Select **CHOOSE WAV/AIFF BAND**.
+3. Point the app to the backing-track directory.
+4. Choose a matching style.
+5. Start the backing band.
+
+When no matching audio stem is available, the app uses its generated MIDI backing arrangement.
+
+## Project Scope
+
+Current development is focused on the core product experience:
+
+- Reliable simultaneous backing and lead playback
+- Better guitar SoundFont integration
+- More natural phrasing and timing
+- Guitar articulations
+- Continuous scale-aware improvisation
+- Fretboard tracing
+- Responsive amplifier-themed UX
+- Reliable guitar-photo loading
+
+The deleted DJ Box and earlier experimental launchers are no longer part of the active source tree. They remain recoverable through Git history.
+
+## Known Limitations
+
+- Sound quality depends heavily on the installed SoundFont and audio hardware.
+- General MIDI fallback instruments can still sound synthetic.
+- MIDI pitch bends and legato gestures approximate physical guitar techniques; they are not a replacement for a dedicated sampled-guitar engine.
+- Remote images and the optional SoundFont installer require network access.
+- Recorded backing tracks are not bundled unless their redistribution rights are explicitly documented.
+
+## Content and Licensing
+
+The repository does not bundle commercial guitar libraries or copyrighted backing recordings. External SoundFonts, audio tracks, and photographs must have licenses that permit their intended use and redistribution. Attribution is displayed for remotely sourced Creative Commons photographs where configured.
