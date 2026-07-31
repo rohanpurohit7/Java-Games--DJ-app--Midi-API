@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#10151d"/>
+  <rect x="30" y="25" width="1220" height="670" rx="18" fill="#1b2331" stroke="#68d391" stroke-width="2"/>
+  <text x="60" y="70" fill="#fff" font-family="Arial" font-size="30" font-weight="bold">LICK LIBRARY & VARIATIONS</text>
+  <text x="60" y="105" fill="#9ae6b4" font-family="Arial" font-size="17">Keep useful phrases, create new ideas, and return to saved licks later.</text>
+  <rect x="60" y="135" width="760" height="470" rx="12" fill="#111827" stroke="#3b4557"/>
+  <text x="85" y="175" fill="#f6ad55" font-family="Arial" font-size="20" font-weight="bold">CURRENT LICK</text>
+  <text x="85" y="215" fill="#e2e8f0" font-family="monospace" font-size="19">A4  C5  D5  Eb5  E5  G5  A5  G5</text>
+  <rect x="85" y="250" width="205" height="52" rx="8" fill="#2f855a"/>
+  <text x="138" y="282" fill="#fff" font-family="Arial" font-size="18" font-weight="bold">SAVE LICK</text>
+  <rect x="310" y="250" width="250" height="52" rx="8" fill="#805ad5"/>
+  <text x="344" y="282" fill="#fff" font-family="Arial" font-size="18" font-weight="bold">GENERATE VARIATION</text>
+  <rect x="580" y="250" width="205" height="52" rx="8" fill="#2b6cb0"/>
+  <text x="615" y="282" fill="#fff" font-family="Arial" font-size="18" font-weight="bold">PLAY VARIATION</text>
+  <text x="85" y="350" fill="#90cdf4" font-family="Arial" font-size="18">Variation strategy:</text>
+  <text x="245" y="350" fill="#fff" font-family="Arial" font-size="18">reverse ending + octave displacement</text>
+  <text x="85" y="395" fill="#90cdf4" font-family="Arial" font-size="18">New phrase:</text>
+  <text x="205" y="395" fill="#fff" font-family="monospace" font-size="18">A4  E5  D5  C5  G5  A5  G4  E5</text>
+  <rect x="85" y="455" width="700" height="115" rx="8" fill="#0f172a"/>
+  <text x="105" y="490" fill="#cbd5e0" font-family="Arial" font-size="16">Practice loop</text>
+  <text x="105" y="525" fill="#fff" font-family="Arial" font-size="17">1. Play original lick  •  2. Improv freely  •  3. Play variation  •  4. Save the best idea</text>
+  <rect x="850" y="135" width="370" height="470" rx="12" fill="#242d3d"/>
+  <text x="875" y="175" fill="#f7fafc" font-family="Arial" font-size="20" font-weight="bold">SAVED LICKS</text>
+  <rect x="875" y="200" width="320" height="65" rx="7" fill="#2d3748" stroke="#68d391"/>
+  <text x="895" y="228" fill="#fff" font-family="Arial" font-size="16">A Blues - Lick 01</text>
+  <text x="895" y="250" fill="#a0aec0" font-family="Arial" font-size="14">8 notes • 110 BPM</text>
+  <rect x="875" y="280" width="320" height="65" rx="7" fill="#2d3748"/>
+  <text x="895" y="308" fill="#fff" font-family="Arial" font-size="16">E Minor Pentatonic - Lick 02</text>
+  <text x="895" y="330" fill="#a0aec0" font-family="Arial" font-size="14">12 notes • 95 BPM</text>
+  <rect x="875" y="360" width="320" height="65" rx="7" fill="#2d3748"/>
+  <text x="895" y="388" fill="#fff" font-family="Arial" font-size="16">D Dorian - Lick 03</text>
+  <text x="895" y="410" fill="#a0aec0" font-family="Arial" font-size="14">10 notes • 120 BPM</text>
+  <rect x="875" y="455" width="150" height="48" rx="8" fill="#4a5568"/>
+  <text x="898" y="485" fill="#fff" font-family="Arial" font-size="16">LOAD SELECTED</text>
+  <rect x="1045" y="455" width="150" height="48" rx="8" fill="#4a5568"/>
+  <text x="1080" y="485" fill="#fff" font-family="Arial" font-size="16">DELETE</text>
+  <rect x="60" y="625" width="1160" height="40" rx="8" fill="#0f172a"/>
+  <text x="85" y="651" fill="#90cdf4" font-family="Arial" font-size="17">STEP 3: Save good phrases and generate variations until you have material for a complete solo.</text>
+</svg>
