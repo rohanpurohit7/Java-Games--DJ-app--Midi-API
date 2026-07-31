@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#11151c"/>
+  <rect x="30" y="25" width="1220" height="670" rx="18" fill="#1b2230" stroke="#4fd1c5" stroke-width="2"/>
+  <text x="60" y="70" fill="#f7fafc" font-family="Arial" font-size="30" font-weight="bold">GUITAR IMPROVISATION STUDIO</text>
+  <text x="60" y="105" fill="#9ae6b4" font-family="Arial" font-size="17">Adaptive orchestra backing band + animated electric-guitar fretboard</text>
+  <rect x="60" y="135" width="1160" height="125" rx="12" fill="#242d3d"/>
+  <text x="85" y="170" fill="#cbd5e0" font-family="Arial" font-size="16">BACKING STYLE</text>
+  <rect x="85" y="185" width="220" height="45" rx="6" fill="#111827" stroke="#718096"/>
+  <text x="105" y="214" fill="#fff" font-family="Arial" font-size="18">Blues Rock</text>
+  <text x="340" y="170" fill="#cbd5e0" font-family="Arial" font-size="16">KEY</text>
+  <rect x="340" y="185" width="120" height="45" rx="6" fill="#111827" stroke="#718096"/>
+  <text x="365" y="214" fill="#fff" font-family="Arial" font-size="18">A</text>
+  <text x="495" y="170" fill="#cbd5e0" font-family="Arial" font-size="16">SCALE</text>
+  <rect x="495" y="185" width="245" height="45" rx="6" fill="#111827" stroke="#718096"/>
+  <text x="515" y="214" fill="#fff" font-family="Arial" font-size="18">Minor Pentatonic</text>
+  <rect x="785" y="180" width="210" height="55" rx="8" fill="#2563eb"/>
+  <text x="815" y="214" fill="#fff" font-family="Arial" font-size="17" font-weight="bold">START BACKING BAND</text>
+  <rect x="1015" y="180" width="165" height="55" rx="8" fill="#4a5568"/>
+  <text x="1062" y="214" fill="#fff" font-family="Arial" font-size="17" font-weight="bold">STOP</text>
+  <rect x="60" y="290" width="1160" height="300" rx="12" fill="#161d28" stroke="#3b4557"/>
+  <text x="85" y="325" fill="#f6ad55" font-family="Arial" font-size="20" font-weight="bold">SCALE OVERLAY: A MINOR PENTATONIC</text>
+  <g stroke="#718096" stroke-width="2">
+    <line x1="110" y1="370" x2="1160" y2="370"/><line x1="110" y1="410" x2="1160" y2="410"/>
+    <line x1="110" y1="450" x2="1160" y2="450"/><line x1="110" y1="490" x2="1160" y2="490"/>
+    <line x1="110" y1="530" x2="1160" y2="530"/><line x1="110" y1="570" x2="1160" y2="570"/>
+  </g>
+  <g stroke="#4a5568" stroke-width="1">
+    <line x1="190" y1="350" x2="190" y2="585"/><line x1="270" y1="350" x2="270" y2="585"/>
+    <line x1="350" y1="350" x2="350" y2="585"/><line x1="430" y1="350" x2="430" y2="585"/>
+    <line x1="510" y1="350" x2="510" y2="585"/><line x1="590" y1="350" x2="590" y2="585"/>
+    <line x1="670" y1="350" x2="670" y2="585"/><line x1="750" y1="350" x2="750" y2="585"/>
+    <line x1="830" y1="350" x2="830" y2="585"/><line x1="910" y1="350" x2="910" y2="585"/>
+    <line x1="990" y1="350" x2="990" y2="585"/><line x1="1070" y1="350" x2="1070" y2="585"/>
+  </g>
+  <g font-family="Arial" font-size="14" text-anchor="middle">
+    <circle cx="230" cy="370" r="15" fill="#f56565"/><text x="230" y="375" fill="#fff">R</text>
+    <circle cx="430" cy="410" r="15" fill="#48bb78"/><text x="430" y="415" fill="#fff">3</text>
+    <circle cx="590" cy="450" r="15" fill="#48bb78"/><text x="590" y="455" fill="#fff">4</text>
+    <circle cx="750" cy="490" r="15" fill="#48bb78"/><text x="750" y="495" fill="#fff">5</text>
+    <circle cx="910" cy="530" r="15" fill="#48bb78"/><text x="910" y="535" fill="#fff">b7</text>
+    <circle cx="1070" cy="570" r="15" fill="#f56565"/><text x="1070" y="575" fill="#fff">R</text>
+  </g>
+  <rect x="60" y="615" width="1160" height="50" rx="8" fill="#0f172a"/>
+  <text x="85" y="647" fill="#90cdf4" font-family="Arial" font-size="17">STEP 1: Pick a style, key, and scale, then start the backing band.</text>
+</svg>
