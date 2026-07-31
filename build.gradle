@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'io.github.rohanpurohit7.music'
-version = '2.0.0'
+version = '3.0.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -17,7 +17,7 @@ javafx {
 }
 
 application {
-    mainClass = 'io.github.rohanpurohit7.mididj.MidiDjBoxFxApp'
+    mainClass = 'io.github.rohanpurohit7.mididj.GuitarImprovisationStudioApp'
 }
 
 tasks.withType(JavaCompile).configureEach {
