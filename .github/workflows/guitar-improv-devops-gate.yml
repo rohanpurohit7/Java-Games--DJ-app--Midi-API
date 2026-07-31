@@ -1,0 +1,99 @@
+name: Guitar Improvisation DevOps Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  compile-and-test:
+    name: Compile and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Compile application and run unit tests
+        run: gradle --no-daemon clean test classes
+
+      - name: Verify primary and legacy entry points
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarImprovisationStudioApp.java
+          test -f src/main/java/io/github/rohanpurohit7/mididj/MidiDjBoxFxApp.java
+          test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarTheory.java
+          grep -q "GuitarImprovisationStudioApp" build.gradle
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guitar-improv-test-report
+          path: build/reports/tests/test/
+          if-no-files-found: warn
+          retention-days: 14
+
+  documentation-and-safety:
+    name: Documentation and Safety Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate demo walkthrough and screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f docs/GUITAR_IMPROV_DEMO.md
+          test -f docs/screenshots/01-select-backing-and-scale.svg
+          test -f docs/screenshots/02-animated-lick-playback.svg
+          test -f docs/screenshots/03-save-and-generate-variation.svg
+          grep -q "START BACKING BAND" docs/GUITAR_IMPROV_DEMO.md
+          grep -q "GENERATE NEW LICK" docs/GUITAR_IMPROV_DEMO.md
+          grep -q "SAVE LICK" docs/GUITAR_IMPROV_DEMO.md
+
+      - name: Block obvious committed secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE --exclude-dir=.git --exclude='*.svg' \
+            '(AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,})' .; then
+            echo 'Potential credential material detected.'
+            exit 1
+          fi
+          echo 'No obvious committed secrets detected.'
+
+      - name: Validate saved-lick persistence is local-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -R "saved-guitar-licks.txt" src/main/java/io/github/rohanpurohit7/mididj
+          ! grep -RInE 'https?://.*(upload|save|lick)' src/main/java/io/github/rohanpurohit7/mididj/GuitarImprovisationStudioApp.java
+
+  release-gate:
+    name: DevOps Release Gate
+    needs: [compile-and-test, documentation-and-safety]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gate passed
+        run: |
+          echo 'Guitar Improvisation Studio quality gate passed.'
+          echo 'Compilation, unit tests, documentation assets, entry points, persistence, and secret checks are valid.'
