@@ -1,4 +1,4 @@
-name: Amp Studio Guitar Demo Gate
+name: Amp Studio Guitar Web Build
 
 on:
   workflow_dispatch:
@@ -11,41 +11,37 @@ permissions:
   contents: read
 
 jobs:
-  demo-build:
+  web-build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: '21'
-          cache: gradle
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.10.2'
-      - name: Compile demo application
-        run: gradle --no-daemon clean classes
-      - name: Verify active application and helpers
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies and prepare open assets
+        run: npm install
+      - name: Build React application
+        run: npm run build
+      - name: Verify core guitar experience
         shell: bash
         run: |
           set -euo pipefail
-          SRC=src/main/java/io/github/rohanpurohit7/mididj
-          test -f "$SRC/AmpStudioGuitarApp.java"
-          test "$(grep -RIl 'extends Application' "$SRC" | wc -l)" -eq 1
-          grep -q "AmpStudioGuitarApp" build.gradle
-          for file in StudioAudioEngine StudioBackingCatalog GuitarArticulationEngine GuitarTheory GuitarStyleAdvisor GuitarPhotoCard FreePatsGuitarLibrary ContinuousImprovPlanner; do
-            test -f "$SRC/$file.java"
-          done
-      - name: Verify demo controls
-        shell: bash
-        run: |
-          set -euo pipefail
-          APP=src/main/java/io/github/rohanpurohit7/mididj/AmpStudioGuitarApp.java
-          grep -q 'PLAY BACKING BAND' "$APP"
-          grep -q 'PLAY LICK OVER BAND' "$APP"
-          grep -q 'SEE TRACE' "$APP"
-          grep -q 'PLAY CONTINUOUS IMPROV' "$APP"
-          grep -q 'INSTALL FREEPATS GUITAR' "$APP"
-          grep -q 'playBackingSequence' src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
-          grep -q 'playLeadSequence' src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
+          test -f src/App.jsx
+          test -f src/audio/guitarEngine.js
+          test -f src/music/lickGenerator.js
+          grep -q 'PLAY LICK OVER BAND' src/App.jsx
+          grep -q 'PLAY CONTINUOUS IMPROV' src/App.jsx
+          grep -q 'hammer-on' src/music/lickGenerator.js
+          grep -q 'pitchWheel' src/audio/guitarEngine.js
+          grep -q 'freepats-clean-electric-guitar.sf2' src/audio/guitarEngine.js
+          test -f public/soundfonts/freepats-clean-electric-guitar.sf2
+          test -f public/assets/studio-electric-guitar.jpg
+          test -f dist/index.html
+      - name: Upload web demo
+        uses: actions/upload-artifact@v4
+        with:
+          name: amp-studio-guitar-web
+          path: dist/
+          if-no-files-found: error
