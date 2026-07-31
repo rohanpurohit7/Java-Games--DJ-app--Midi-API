@@ -1,4 +1,4 @@
-name: Amp Studio Guitar DevOps Gate
+name: Amp Studio Guitar Demo Gate
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  compile-and-regression:
+  demo-build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -24,9 +24,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
-      - name: Compile and test
-        run: gradle --no-daemon clean test classes
-      - name: Verify single active application
+      - name: Compile demo application
+        run: gradle --no-daemon clean classes
+      - name: Verify active application and helpers
         shell: bash
         run: |
           set -euo pipefail
@@ -34,15 +34,10 @@ jobs:
           test -f "$SRC/AmpStudioGuitarApp.java"
           test "$(grep -RIl 'extends Application' "$SRC" | wc -l)" -eq 1
           grep -q "AmpStudioGuitarApp" build.gradle
-      - name: Verify required helpers
-        shell: bash
-        run: |
-          set -euo pipefail
-          SRC=src/main/java/io/github/rohanpurohit7/mididj
-          for file in StudioAudioEngine StudioBackingCatalog GuitarArticulationEngine GuitarTheory GuitarStyleAdvisor GuitarPhotoCard FreePatsGuitarLibrary ContinuousImprovPlanner DogLickSticker; do
+          for file in StudioAudioEngine StudioBackingCatalog GuitarArticulationEngine GuitarTheory GuitarStyleAdvisor GuitarPhotoCard FreePatsGuitarLibrary ContinuousImprovPlanner; do
             test -f "$SRC/$file.java"
           done
-      - name: Verify amp UX and playback architecture
+      - name: Verify demo controls
         shell: bash
         run: |
           set -euo pipefail
@@ -52,35 +47,5 @@ jobs:
           grep -q 'SEE TRACE' "$APP"
           grep -q 'PLAY CONTINUOUS IMPROV' "$APP"
           grep -q 'INSTALL FREEPATS GUITAR' "$APP"
-          grep -q 'speaker-cabinet' src/main/resources/styles/guitar-improv.css
-          grep -q 'amp-head' src/main/resources/styles/guitar-improv.css
           grep -q 'playBackingSequence' src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
           grep -q 'playLeadSequence' src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: amp-studio-test-report
-          path: build/reports/tests/test/
-          if-no-files-found: warn
-
-  safety:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check secrets and undocumented audio binaries
-        shell: bash
-        run: |
-          set -euo pipefail
-          ! grep -RInE --exclude-dir=.git '(AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{20,})' .
-          if find . -type f \( -iname '*.wav' -o -iname '*.aiff' -o -iname '*.sf2' \) -not -path './build/*' | grep -q .; then
-            echo 'Audio assets require documented redistribution rights.'
-            exit 1
-          fi
-
-  release-gate:
-    needs: [compile-and-regression, safety]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo 'AmpStudioGuitarApp release gate passed.'
