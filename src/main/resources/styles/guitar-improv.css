@@ -1,0 +1,106 @@
+.root, .guitar-studio {
+    -fx-background-color: linear-gradient(to bottom, #11151d, #07090d);
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-text-fill: #f4f7fb;
+}
+
+.label { -fx-text-fill: #e9eef7; }
+
+.studio-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffb347;
+}
+
+.status-line {
+    -fx-padding: 8 12 8 12;
+    -fx-background-color: #151c27;
+    -fx-border-color: #2e4159;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #8fe6ff;
+}
+
+.field-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #93a4ba;
+}
+
+.combo-box, .list-view, .slider {
+    -fx-background-color: #151c27;
+    -fx-border-color: #31445c;
+    -fx-text-fill: white;
+}
+
+.fretboard {
+    -fx-padding: 12;
+    -fx-background-color: #25170f;
+    -fx-border-color: #7a5535;
+    -fx-border-width: 2;
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+}
+
+.fret-cell {
+    -fx-background-color: linear-gradient(to bottom, #3b2a1f, #24160e);
+    -fx-border-color: #98734f;
+    -fx-border-width: 0 1 0 1;
+    -fx-text-fill: #7f8792;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.scale-note {
+    -fx-background-color: #173a4a;
+    -fx-text-fill: #8fe6ff;
+    -fx-border-color: #2cc8ff;
+    -fx-border-width: 2;
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+}
+
+.root-note {
+    -fx-background-color: #5b241f;
+    -fx-text-fill: #ffd166;
+    -fx-border-color: #ff7b54;
+}
+
+.lick-note {
+    -fx-effect: dropshadow(gaussian, rgba(255, 209, 102, .75), 10, .5, 0, 0);
+}
+
+.lick-note-active {
+    -fx-background-color: #f6d743;
+    -fx-text-fill: #111;
+    -fx-border-color: white;
+    -fx-scale-x: 1.12;
+    -fx-scale-y: 1.12;
+    -fx-effect: dropshadow(gaussian, rgba(255, 245, 150, .95), 18, .7, 0, 0);
+}
+
+.fret-number, .string-name {
+    -fx-text-fill: #b7c4d4;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.lick-readout {
+    -fx-padding: 12;
+    -fx-background-color: #111a24;
+    -fx-border-color: #334b67;
+    -fx-text-fill: #f4d06f;
+    -fx-font-family: Consolas, monospace;
+}
+
+.studio-button {
+    -fx-background-color: linear-gradient(to bottom, #344960, #1f2d3d);
+    -fx-border-color: #58728d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 12 8 12;
+}
+
+.studio-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #4b6988, #2b4158);
+}
