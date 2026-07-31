@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'io.github.rohanpurohit7.music'
-version = '3.1.0'
+version = '4.0.0'
 
 repositories {
     mavenCentral()
@@ -17,7 +17,7 @@ java {
 
 javafx {
     version = '21.0.5'
-    modules = ['javafx.controls', 'javafx.graphics']
+    modules = ['javafx.controls', 'javafx.graphics', 'javafx.media']
 }
 
 dependencies {
@@ -26,7 +26,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'io.github.rohanpurohit7.mididj.GuitarImprovisationStudioApp'
+    mainClass = 'io.github.rohanpurohit7.mididj.StudioQualityGuitarApp'
 }
 
 tasks.withType(JavaCompile).configureEach {
