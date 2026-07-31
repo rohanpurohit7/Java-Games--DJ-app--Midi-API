@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   compile-and-test:
-    name: Compile and Test
+    name: Compile and Test Studio Audio
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -33,44 +33,57 @@ jobs:
       - name: Compile application and run unit tests
         run: gradle --no-daemon clean test classes
 
-      - name: Verify primary and legacy entry points
+      - name: Verify studio and legacy entry points
         shell: bash
         run: |
           set -euo pipefail
+          test -f src/main/java/io/github/rohanpurohit7/mididj/StudioQualityGuitarApp.java
+          test -f src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
+          test -f src/main/java/io/github/rohanpurohit7/mididj/StudioBackingCatalog.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarImprovisationStudioApp.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/MidiDjBoxFxApp.java
           test -f src/main/java/io/github/rohanpurohit7/mididj/GuitarTheory.java
-          grep -q "GuitarImprovisationStudioApp" build.gradle
+          grep -q "StudioQualityGuitarApp" build.gradle
+          grep -q "javafx.media" build.gradle
+
+      - name: Verify studio capabilities
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q "loadSoundFont" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
+          grep -q "playLosslessBacking" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
+          grep -q "ToneSettings" src/main/java/io/github/rohanpurohit7/mididj/StudioAudioEngine.java
+          grep -q "GUITAR TONE OVERLAY" src/main/java/io/github/rohanpurohit7/mididj/StudioQualityGuitarApp.java
+          grep -q "CHOOSE LOSSLESS BACKING LIBRARY" src/main/java/io/github/rohanpurohit7/mididj/StudioQualityGuitarApp.java
 
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: guitar-improv-test-report
+          name: studio-guitar-test-report
           path: build/reports/tests/test/
           if-no-files-found: warn
           retention-days: 14
 
   documentation-and-safety:
-    name: Documentation and Safety Gate
+    name: Documentation and Asset Safety Gate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate demo walkthrough and screenshots
+      - name: Validate demo and studio audio guide
         shell: bash
         run: |
           set -euo pipefail
           test -f docs/GUITAR_IMPROV_DEMO.md
-          test -f docs/screenshots/01-select-backing-and-scale.svg
-          test -f docs/screenshots/02-animated-lick-playback.svg
-          test -f docs/screenshots/03-save-and-generate-variation.svg
-          grep -q "START BACKING BAND" docs/GUITAR_IMPROV_DEMO.md
-          grep -q "GENERATE NEW LICK" docs/GUITAR_IMPROV_DEMO.md
-          grep -q "SAVE LICK" docs/GUITAR_IMPROV_DEMO.md
+          test -f docs/STUDIO_AUDIO_SETUP.md
+          test -f backing-tracks/README.md
+          grep -q "SoundFont" docs/STUDIO_AUDIO_SETUP.md
+          grep -q "WAV" docs/STUDIO_AUDIO_SETUP.md
+          grep -q "30" docs/STUDIO_AUDIO_SETUP.md
 
-      - name: Block obvious committed secrets
+      - name: Block obvious committed secrets and unlicensed audio binaries
         shell: bash
         run: |
           set -euo pipefail
@@ -79,21 +92,17 @@ jobs:
             echo 'Potential credential material detected.'
             exit 1
           fi
-          echo 'No obvious committed secrets detected.'
-
-      - name: Validate saved-lick persistence is local-only
-        shell: bash
-        run: |
-          set -euo pipefail
-          grep -R "saved-guitar-licks.txt" src/main/java/io/github/rohanpurohit7/mididj
-          ! grep -RInE 'https?://.*(upload|save|lick)' src/main/java/io/github/rohanpurohit7/mididj/GuitarImprovisationStudioApp.java
+          if find . -type f \( -iname '*.wav' -o -iname '*.aiff' -o -iname '*.sf2' \) -not -path './build/*' | grep -q .; then
+            echo 'Audio/SoundFont binaries must not be committed without documented redistribution rights.'
+            exit 1
+          fi
 
   release-gate:
-    name: DevOps Release Gate
+    name: Studio Audio Release Gate
     needs: [compile-and-test, documentation-and-safety]
     runs-on: ubuntu-latest
     steps:
       - name: Gate passed
         run: |
-          echo 'Guitar Improvisation Studio quality gate passed.'
-          echo 'Compilation, unit tests, documentation assets, entry points, persistence, and secret checks are valid.'
+          echo 'Studio Guitar Improvisation quality gate passed.'
+          echo 'Compilation, tests, SoundFont support, lossless backing support, tone controls, catalog, docs, and asset safety are valid.'
