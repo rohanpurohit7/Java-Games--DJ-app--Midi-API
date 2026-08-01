@@ -1,5 +1,7 @@
 # Amp Studio Guitar App
 
+<img width="1720" height="684" alt="image" src="https://github.com/user-attachments/assets/97cf80b1-a5bc-44b7-bbfe-1db15d2781b6" />
+
 A React/Web Audio guitar-improvisation studio built around real backing-track audio, sampled FreePats electric and nylon guitars, groove-aware phrasing, one-position-at-a-time fretboard tracing, and expressive techniques such as hammer-ons, pull-offs, bends, vibrato, and slides.
 
 ## Launch
